@@ -1,0 +1,5 @@
+package tokenizer
+
+func Init() {
+
+}
