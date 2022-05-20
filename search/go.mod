@@ -6,6 +6,7 @@ require (
 	github.com/apache/thrift v0.16.0
 	github.com/cloudwego/kitex v0.3.1
 	github.com/stretchr/testify v1.7.0
+	github.com/wangbin/jiebago v0.3.2
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/gorm v1.23.5
 	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
