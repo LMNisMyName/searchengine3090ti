@@ -10,8 +10,6 @@ import (
 
 var DB *gorm.DB
 
-//建立数据模型
-//Keyword与UserID之间是manytomany关系，UserID与Record是has one关系
 func Init() {
 	var err error
 	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
@@ -26,25 +24,12 @@ func Init() {
 	if err = DB.Use(gormopentracing.New()); err != nil {
 		panic(err)
 	}
-	// m := DB.Migrator()
-
-	// if !m.HasTable(&Keyword{}) {
-	// 	if err = m.CreateTable(&Keyword{}); err != nil {
-	// 		panic(err)
-	// 	}
-	// }
-
-	// if !m.HasTable(&UserID{}) {
-	// 	if err = m.CreateTable(&UserID{}); err != nil {
-	// 		panic(err)
-	// 	}
-	// }
-
-	// if !m.HasTable(&Record{}) {
-	// 	if err = m.CreateTable(&Record{}); err != nil {
-	// 		panic(err)
-	// 	}
-	// }
 	DB.AutoMigrate(&Keyword{})
 	DB.AutoMigrate(&Record{})
+}
+
+func DelectAllEntry() {
+	DB.Where("1 = 1").Delete(&Keyword{})
+	DB.Where("1 = 1").Delete(&UserID{})
+	DB.Where("1 = 1").Delete(&Record{})
 }

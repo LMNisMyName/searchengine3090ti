@@ -1,6 +1,6 @@
 # SearchEngine3090ti
 
-抖音搜索引擎项目
+2022字节跳动青训营搜索引擎项目
 
 ## Getting started
 
