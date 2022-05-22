@@ -18,18 +18,20 @@ func TestMain(m *testing.M) {
 }
 
 func TestAddIndex(t *testing.T) {
-	req := searchapi.AddRequest{Id: 1, Text: "", Url: "www"}
-	keywords := []string{"extra"}
+	req := searchapi.AddRequest{Id: 1, Text: "extra", Url: "www"}
+	keywords := []string{"extra1"}
 	db.AddIndex(context.Background(), &req, keywords)
 }
 
+//通过关键词查询id
 func TestQuery(t *testing.T) {
-	ids, find := db.Query(context.Background(), "people")
+	ids, find := db.Query(context.Background(), "extra")
 	fmt.Println(ids)
 	fmt.Println(find)
 	// assert.Equal(t, true, find)
 }
 
+//通过id查询关键词
 func TestQueryKeyWords(t *testing.T) {
 	keywords, find := db.QueryKeyWords(context.Background(), 1)
 	fmt.Println(keywords)

@@ -19,3 +19,9 @@ func (s *SearchImpl) Add(ctx context.Context, req *searchapi.AddRequest) (resp *
 	// TODO: Your code here...
 	return
 }
+
+// RelatedQuery implements the SearchImpl interface.
+func (s *SearchImpl) RelatedQuery(ctx context.Context, req *searchapi.RelatedQueryRequest) (resp *searchapi.RelatedQueryResponse, err error) {
+	// TODO: Your code here...
+	return
+}

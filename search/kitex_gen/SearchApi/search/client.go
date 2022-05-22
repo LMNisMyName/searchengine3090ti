@@ -13,6 +13,7 @@ import (
 type Client interface {
 	Query(ctx context.Context, req *searchapi.QueryRequest, callOptions ...callopt.Option) (r *searchapi.QueryResponse, err error)
 	Add(ctx context.Context, req *searchapi.AddRequest, callOptions ...callopt.Option) (r *searchapi.AddResponse, err error)
+	RelatedQuery(ctx context.Context, req *searchapi.RelatedQueryRequest, callOptions ...callopt.Option) (r *searchapi.RelatedQueryResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +53,9 @@ func (p *kSearchClient) Query(ctx context.Context, req *searchapi.QueryRequest, 
 func (p *kSearchClient) Add(ctx context.Context, req *searchapi.AddRequest, callOptions ...callopt.Option) (r *searchapi.AddResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Add(ctx, req)
+}
+
+func (p *kSearchClient) RelatedQuery(ctx context.Context, req *searchapi.RelatedQueryRequest, callOptions ...callopt.Option) (r *searchapi.RelatedQueryResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.RelatedQuery(ctx, req)
 }

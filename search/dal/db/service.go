@@ -34,16 +34,20 @@ type Record struct {
 // 同时建立起这些Keywords与UserID记录之间的关联
 // 对于UserID表，添加当前记录
 // 同时建立起当前UserID与Keywords之间的关联
-func AddIndex(ctx context.Context, req *searchapi.AddRequest, keywords []string) {
+func AddIndex(ctx context.Context, req *searchapi.AddRequest, keywords []string) error {
 	//添加record记录
 	newRecordEntry := Record{RecordId: req.Id, Text: req.Text, Url: req.Url}
-	DB.Model(&Record{}).Create(&newRecordEntry)
+	if ret := DB.Model(&Record{}).Create(&newRecordEntry); ret.Error != nil {
+		return ret.Error
+	}
 	//添加UserID记录
 	var newUserIDEntry UserID
 	result := DB.First(&newUserIDEntry, "uid = ?", req.Id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		newUserIDEntry = UserID{UID: req.Id}
-		DB.Model(&UserID{}).Create(&newUserIDEntry)
+		if ret := DB.Model(&UserID{}).Create(&newUserIDEntry); ret.Error != nil {
+			return ret.Error
+		}
 	}
 	//遍历关键词添加尚未存在的keywords记录
 	keywordSlice := []*Keyword{}
@@ -53,13 +57,20 @@ func AddIndex(ctx context.Context, req *searchapi.AddRequest, keywords []string)
 		result := DB.First(&keywordEntry, "word = ?", word)
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			keywordEntry = Keyword{Word: word}
-			DB.Model(&Keyword{}).Create(&keywordEntry)
+			if ret := DB.Model(&Keyword{}).Create(&keywordEntry); ret.Error != nil {
+				return ret.Error
+			}
 		}
 		//建立Keywords与UserID记录之间的关联
-		DB.Model(&keywordEntry).Association("UserIDs").Append(&newUserIDEntry)
+		if ret := DB.Model(&keywordEntry).Association("UserIDs").Append(&newUserIDEntry); ret != nil {
+			return ret
+		}
 		keywordSlice = append(keywordSlice, &keywordEntry)
 	}
-	DB.Model(&newUserIDEntry).Association("Keywords").Append(keywordSlice)
+	if ret := DB.Model(&newUserIDEntry).Association("Keywords").Append(keywordSlice); ret != nil {
+		return ret
+	}
+	return nil
 }
 
 //查询与关键词相关的索引id数组

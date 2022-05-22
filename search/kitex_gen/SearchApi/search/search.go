@@ -19,8 +19,9 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "Search"
 	handlerType := (*searchapi.Search)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"query": kitex.NewMethodInfo(queryHandler, newSearchQueryArgs, newSearchQueryResult, false),
-		"add":   kitex.NewMethodInfo(addHandler, newSearchAddArgs, newSearchAddResult, false),
+		"query":        kitex.NewMethodInfo(queryHandler, newSearchQueryArgs, newSearchQueryResult, false),
+		"add":          kitex.NewMethodInfo(addHandler, newSearchAddArgs, newSearchAddResult, false),
+		"relatedQuery": kitex.NewMethodInfo(relatedQueryHandler, newSearchRelatedQueryArgs, newSearchRelatedQueryResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "searchapi",
@@ -72,6 +73,24 @@ func newSearchAddResult() interface{} {
 	return searchapi.NewSearchAddResult()
 }
 
+func relatedQueryHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*searchapi.SearchRelatedQueryArgs)
+	realResult := result.(*searchapi.SearchRelatedQueryResult)
+	success, err := handler.(searchapi.Search).RelatedQuery(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newSearchRelatedQueryArgs() interface{} {
+	return searchapi.NewSearchRelatedQueryArgs()
+}
+
+func newSearchRelatedQueryResult() interface{} {
+	return searchapi.NewSearchRelatedQueryResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -97,6 +116,16 @@ func (p *kClient) Add(ctx context.Context, req *searchapi.AddRequest) (r *search
 	_args.Req = req
 	var _result searchapi.SearchAddResult
 	if err = p.c.Call(ctx, "add", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) RelatedQuery(ctx context.Context, req *searchapi.RelatedQueryRequest) (r *searchapi.RelatedQueryResponse, err error) {
+	var _args searchapi.SearchRelatedQueryArgs
+	_args.Req = req
+	var _result searchapi.SearchRelatedQueryResult
+	if err = p.c.Call(ctx, "relatedQuery", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

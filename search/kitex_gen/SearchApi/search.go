@@ -448,10 +448,11 @@ func (p *AddResponse) Field1DeepEqual(src bool) bool {
 }
 
 type QueryRequest struct {
-	QueryText string `thrift:"queryText,1" json:"queryText"`
-	Page      int32  `thrift:"page,2" json:"page"`
-	Limit     int32  `thrift:"limit,3" json:"limit"`
-	Order     int32  `thrift:"order,4" json:"order"`
+	QueryText  string `thrift:"queryText,1" json:"queryText"`
+	FilterText string `thrift:"filterText,2" json:"filterText"`
+	Page       int32  `thrift:"page,3" json:"page"`
+	Limit      int32  `thrift:"limit,4" json:"limit"`
+	Order      int32  `thrift:"order,5" json:"order"`
 }
 
 func NewQueryRequest() *QueryRequest {
@@ -460,6 +461,10 @@ func NewQueryRequest() *QueryRequest {
 
 func (p *QueryRequest) GetQueryText() (v string) {
 	return p.QueryText
+}
+
+func (p *QueryRequest) GetFilterText() (v string) {
+	return p.FilterText
 }
 
 func (p *QueryRequest) GetPage() (v int32) {
@@ -476,6 +481,9 @@ func (p *QueryRequest) GetOrder() (v int32) {
 func (p *QueryRequest) SetQueryText(val string) {
 	p.QueryText = val
 }
+func (p *QueryRequest) SetFilterText(val string) {
+	p.FilterText = val
+}
 func (p *QueryRequest) SetPage(val int32) {
 	p.Page = val
 }
@@ -488,9 +496,10 @@ func (p *QueryRequest) SetOrder(val int32) {
 
 var fieldIDToName_QueryRequest = map[int16]string{
 	1: "queryText",
-	2: "page",
-	3: "limit",
-	4: "order",
+	2: "filterText",
+	3: "page",
+	4: "limit",
+	5: "order",
 }
 
 func (p *QueryRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -523,7 +532,7 @@ func (p *QueryRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -545,6 +554,16 @@ func (p *QueryRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 4:
 			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField4(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 5:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -592,10 +611,10 @@ func (p *QueryRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *QueryRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Page = v
+		p.FilterText = v
 	}
 	return nil
 }
@@ -604,12 +623,21 @@ func (p *QueryRequest) ReadField3(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
-		p.Limit = v
+		p.Page = v
 	}
 	return nil
 }
 
 func (p *QueryRequest) ReadField4(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		p.Limit = v
+	}
+	return nil
+}
+
+func (p *QueryRequest) ReadField5(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
@@ -638,6 +666,10 @@ func (p *QueryRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField4(oprot); err != nil {
 			fieldId = 4
+			goto WriteFieldError
+		}
+		if err = p.writeField5(oprot); err != nil {
+			fieldId = 5
 			goto WriteFieldError
 		}
 
@@ -677,10 +709,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("page", thrift.I32, 2); err != nil {
+	if err = oprot.WriteFieldBegin("filterText", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Page); err != nil {
+	if err := oprot.WriteString(p.FilterText); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -694,10 +726,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryRequest) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("limit", thrift.I32, 3); err != nil {
+	if err = oprot.WriteFieldBegin("page", thrift.I32, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Limit); err != nil {
+	if err := oprot.WriteI32(p.Page); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -711,10 +743,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryRequest) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("order", thrift.I32, 4); err != nil {
+	if err = oprot.WriteFieldBegin("limit", thrift.I32, 4); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Order); err != nil {
+	if err := oprot.WriteI32(p.Limit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -725,6 +757,23 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
+}
+
+func (p *QueryRequest) writeField5(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("order", thrift.I32, 5); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI32(p.Order); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
 }
 
 func (p *QueryRequest) String() string {
@@ -743,13 +792,16 @@ func (p *QueryRequest) DeepEqual(ano *QueryRequest) bool {
 	if !p.Field1DeepEqual(ano.QueryText) {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.Page) {
+	if !p.Field2DeepEqual(ano.FilterText) {
 		return false
 	}
-	if !p.Field3DeepEqual(ano.Limit) {
+	if !p.Field3DeepEqual(ano.Page) {
 		return false
 	}
-	if !p.Field4DeepEqual(ano.Order) {
+	if !p.Field4DeepEqual(ano.Limit) {
+		return false
+	}
+	if !p.Field5DeepEqual(ano.Order) {
 		return false
 	}
 	return true
@@ -762,21 +814,28 @@ func (p *QueryRequest) Field1DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *QueryRequest) Field2DeepEqual(src int32) bool {
+func (p *QueryRequest) Field2DeepEqual(src string) bool {
 
-	if p.Page != src {
+	if strings.Compare(p.FilterText, src) != 0 {
 		return false
 	}
 	return true
 }
 func (p *QueryRequest) Field3DeepEqual(src int32) bool {
 
-	if p.Limit != src {
+	if p.Page != src {
 		return false
 	}
 	return true
 }
 func (p *QueryRequest) Field4DeepEqual(src int32) bool {
+
+	if p.Limit != src {
+		return false
+	}
+	return true
+}
+func (p *QueryRequest) Field5DeepEqual(src int32) bool {
 
 	if p.Order != src {
 		return false
@@ -1264,10 +1323,359 @@ func (p *QueryResponse) Field6DeepEqual(src []*AddRequest) bool {
 	return true
 }
 
+type RelatedQueryRequest struct {
+	QueryText string `thrift:"queryText,1" json:"queryText"`
+}
+
+func NewRelatedQueryRequest() *RelatedQueryRequest {
+	return &RelatedQueryRequest{}
+}
+
+func (p *RelatedQueryRequest) GetQueryText() (v string) {
+	return p.QueryText
+}
+func (p *RelatedQueryRequest) SetQueryText(val string) {
+	p.QueryText = val
+}
+
+var fieldIDToName_RelatedQueryRequest = map[int16]string{
+	1: "queryText",
+}
+
+func (p *RelatedQueryRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_RelatedQueryRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *RelatedQueryRequest) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.QueryText = v
+	}
+	return nil
+}
+
+func (p *RelatedQueryRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("RelatedQueryRequest"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *RelatedQueryRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("queryText", thrift.STRING, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.QueryText); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *RelatedQueryRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("RelatedQueryRequest(%+v)", *p)
+}
+
+func (p *RelatedQueryRequest) DeepEqual(ano *RelatedQueryRequest) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.QueryText) {
+		return false
+	}
+	return true
+}
+
+func (p *RelatedQueryRequest) Field1DeepEqual(src string) bool {
+
+	if strings.Compare(p.QueryText, src) != 0 {
+		return false
+	}
+	return true
+}
+
+type RelatedQueryResponse struct {
+	RelatedTexts []string `thrift:"relatedTexts,1" json:"relatedTexts"`
+}
+
+func NewRelatedQueryResponse() *RelatedQueryResponse {
+	return &RelatedQueryResponse{}
+}
+
+func (p *RelatedQueryResponse) GetRelatedTexts() (v []string) {
+	return p.RelatedTexts
+}
+func (p *RelatedQueryResponse) SetRelatedTexts(val []string) {
+	p.RelatedTexts = val
+}
+
+var fieldIDToName_RelatedQueryResponse = map[int16]string{
+	1: "relatedTexts",
+}
+
+func (p *RelatedQueryResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_RelatedQueryResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *RelatedQueryResponse) ReadField1(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	p.RelatedTexts = make([]string, 0, size)
+	for i := 0; i < size; i++ {
+		var _elem string
+		if v, err := iprot.ReadString(); err != nil {
+			return err
+		} else {
+			_elem = v
+		}
+
+		p.RelatedTexts = append(p.RelatedTexts, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *RelatedQueryResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("RelatedQueryResponse"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *RelatedQueryResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("relatedTexts", thrift.LIST, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.STRING, len(p.RelatedTexts)); err != nil {
+		return err
+	}
+	for _, v := range p.RelatedTexts {
+		if err := oprot.WriteString(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *RelatedQueryResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("RelatedQueryResponse(%+v)", *p)
+}
+
+func (p *RelatedQueryResponse) DeepEqual(ano *RelatedQueryResponse) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.RelatedTexts) {
+		return false
+	}
+	return true
+}
+
+func (p *RelatedQueryResponse) Field1DeepEqual(src []string) bool {
+
+	if len(p.RelatedTexts) != len(src) {
+		return false
+	}
+	for i, v := range p.RelatedTexts {
+		_src := src[i]
+		if strings.Compare(v, _src) != 0 {
+			return false
+		}
+	}
+	return true
+}
+
 type Search interface {
 	Query(ctx context.Context, req *QueryRequest) (r *QueryResponse, err error)
 
 	Add(ctx context.Context, req *AddRequest) (r *AddResponse, err error)
+
+	RelatedQuery(ctx context.Context, req *RelatedQueryRequest) (r *RelatedQueryResponse, err error)
 }
 
 type SearchClient struct {
@@ -1316,6 +1724,16 @@ func (p *SearchClient) Add(ctx context.Context, req *AddRequest) (r *AddResponse
 	return _result.GetSuccess(), nil
 }
 
+func (p *SearchClient) RelatedQuery(ctx context.Context, req *RelatedQueryRequest) (r *RelatedQueryResponse, err error) {
+	var _args SearchRelatedQueryArgs
+	_args.Req = req
+	var _result SearchRelatedQueryResult
+	if err = p.Client_().Call(ctx, "relatedQuery", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
 type SearchProcessor struct {
 	processorMap map[string]thrift.TProcessorFunction
 	handler      Search
@@ -1338,6 +1756,7 @@ func NewSearchProcessor(handler Search) *SearchProcessor {
 	self := &SearchProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
 	self.AddToProcessorMap("query", &searchProcessorQuery{handler: handler})
 	self.AddToProcessorMap("add", &searchProcessorAdd{handler: handler})
+	self.AddToProcessorMap("relatedQuery", &searchProcessorRelatedQuery{handler: handler})
 	return self
 }
 func (p *SearchProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -1437,6 +1856,54 @@ func (p *searchProcessorAdd) Process(ctx context.Context, seqId int32, iprot, op
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("add", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type searchProcessorRelatedQuery struct {
+	handler Search
+}
+
+func (p *searchProcessorRelatedQuery) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := SearchRelatedQueryArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("relatedQuery", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := SearchRelatedQueryResult{}
+	var retval *RelatedQueryResponse
+	if retval, err2 = p.handler.RelatedQuery(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing relatedQuery: "+err2.Error())
+		oprot.WriteMessageBegin("relatedQuery", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("relatedQuery", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -2123,6 +2590,344 @@ func (p *SearchAddResult) DeepEqual(ano *SearchAddResult) bool {
 }
 
 func (p *SearchAddResult) Field0DeepEqual(src *AddResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type SearchRelatedQueryArgs struct {
+	Req *RelatedQueryRequest `thrift:"req,1" json:"req"`
+}
+
+func NewSearchRelatedQueryArgs() *SearchRelatedQueryArgs {
+	return &SearchRelatedQueryArgs{}
+}
+
+var SearchRelatedQueryArgs_Req_DEFAULT *RelatedQueryRequest
+
+func (p *SearchRelatedQueryArgs) GetReq() (v *RelatedQueryRequest) {
+	if !p.IsSetReq() {
+		return SearchRelatedQueryArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *SearchRelatedQueryArgs) SetReq(val *RelatedQueryRequest) {
+	p.Req = val
+}
+
+var fieldIDToName_SearchRelatedQueryArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *SearchRelatedQueryArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *SearchRelatedQueryArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_SearchRelatedQueryArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *SearchRelatedQueryArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewRelatedQueryRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *SearchRelatedQueryArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("relatedQuery_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *SearchRelatedQueryArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *SearchRelatedQueryArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("SearchRelatedQueryArgs(%+v)", *p)
+}
+
+func (p *SearchRelatedQueryArgs) DeepEqual(ano *SearchRelatedQueryArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *SearchRelatedQueryArgs) Field1DeepEqual(src *RelatedQueryRequest) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type SearchRelatedQueryResult struct {
+	Success *RelatedQueryResponse `thrift:"success,0" json:"success,omitempty"`
+}
+
+func NewSearchRelatedQueryResult() *SearchRelatedQueryResult {
+	return &SearchRelatedQueryResult{}
+}
+
+var SearchRelatedQueryResult_Success_DEFAULT *RelatedQueryResponse
+
+func (p *SearchRelatedQueryResult) GetSuccess() (v *RelatedQueryResponse) {
+	if !p.IsSetSuccess() {
+		return SearchRelatedQueryResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *SearchRelatedQueryResult) SetSuccess(x interface{}) {
+	p.Success = x.(*RelatedQueryResponse)
+}
+
+var fieldIDToName_SearchRelatedQueryResult = map[int16]string{
+	0: "success",
+}
+
+func (p *SearchRelatedQueryResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *SearchRelatedQueryResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_SearchRelatedQueryResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *SearchRelatedQueryResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewRelatedQueryResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *SearchRelatedQueryResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("relatedQuery_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *SearchRelatedQueryResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *SearchRelatedQueryResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("SearchRelatedQueryResult(%+v)", *p)
+}
+
+func (p *SearchRelatedQueryResult) DeepEqual(ano *SearchRelatedQueryResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *SearchRelatedQueryResult) Field0DeepEqual(src *RelatedQueryResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false
