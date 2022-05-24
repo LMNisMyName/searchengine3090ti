@@ -6,6 +6,7 @@ require (
 	github.com/apache/thrift v0.16.0
 	github.com/cloudwego/kitex v0.3.1
 	github.com/liyue201/gostl v1.0.1
+	github.com/mozillazg/go-pinyin v0.19.0
 	github.com/stretchr/testify v1.7.0
 	github.com/wangbin/jiebago v0.3.2
 	gorm.io/driver/mysql v1.3.3
@@ -26,7 +27,6 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/mozillazg/go-pinyin v0.19.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/tidwall/gjson v1.9.3 // indirect
