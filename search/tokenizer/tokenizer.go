@@ -2,9 +2,10 @@ package tokenizer
 
 import (
 	"embed"
-	"github.com/wangbin/jiebago"
 	"search/tokenizer/utils"
 	"strings"
+
+	"github.com/wangbin/jiebago"
 )
 
 var (
@@ -23,6 +24,8 @@ type Tokenizer struct {
 			sync.RWMutex
 	}······*/
 }
+
+var MyTokenizer *Tokenizer
 
 func NewTokenizer(dictionaryPath string) *Tokenizer {
 	file, err := dictonaryFS.Open("data/dictionary.txt")

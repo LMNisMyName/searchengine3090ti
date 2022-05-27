@@ -12,7 +12,7 @@ import (
 func TestMain(m *testing.M) {
 	// db.DropAllTable()
 	db.Init()
-	// db.DelectAllEntry()
+	db.DelectAllEntry()
 	code := m.Run()
 	os.Exit(code)
 }
