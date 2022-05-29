@@ -4,16 +4,17 @@ import (
 	"context"
 	searchapi "search/kitex_gen/SearchApi"
 	"strconv"
+	"web/idgen"
 	"web/rpc"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Add(ctx *gin.Context) {
-	id, _ := strconv.Atoi(ctx.Query("id"))
+	id := idgen.GetID()
 	text := ctx.Query("text")
 	url := ctx.Query("url")
-	resp, err := rpc.SearchClient.Add(context.Background(), &searchapi.AddRequest{Id: int32(id), Text: text, Url: url})
+	resp, err := rpc.SearchClient.Add(context.Background(), &searchapi.AddRequest{Id: id, Text: text, Url: url})
 	if err != nil {
 		panic(err)
 	}

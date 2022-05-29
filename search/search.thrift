@@ -35,6 +35,15 @@ struct RelatedQueryResponse{
     1: list<string> relatedTexts    //与用户输入请求相关的文本
 }
 
+struct FindIDResponse{
+    1: bool found                   //是否找到
+}
+
+struct FindIDRequest{
+    1: i32  id                      //要查找的ID   
+}
+
+
 service Search {
     //提供支持分页、关键词过滤的查询服务
     QueryResponse query(1: QueryRequest req)
@@ -42,4 +51,6 @@ service Search {
     AddResponse add(1: AddRequest req)
     //提供相关搜索服务
     RelatedQueryResponse relatedQuery(1: RelatedQueryRequest req)
+    //查询id是否存在
+    FindIDResponse  findID(1: FindIDRequest req) 
 }

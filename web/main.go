@@ -2,6 +2,7 @@ package main
 
 import (
 	"web/handlers"
+	"web/idgen"
 	"web/rpc"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 
 func Init() {
 	rpc.Init()
+	idgen.Init()
 }
 
 func main() {

@@ -142,3 +142,15 @@ func (s *SearchImpl) RelatedQuery(ctx context.Context, req *searchapi.RelatedQue
 	resp.RelatedTexts = relatedsearch.SearchTopK(req.QueryText, 10)
 	return
 }
+
+// FindID implements the SearchImpl interface.
+func (s *SearchImpl) FindID(ctx context.Context, req *searchapi.FindIDRequest) (resp *searchapi.FindIDResponse, err error) {
+	// 调用数据库根据ID查询记录接口
+	ret, err := db.QueryRecord(context.Background(), []int32{req.Id})
+	if len(ret) == 0 {
+		resp.Found = false
+	} else {
+		resp.Found = true
+	}
+	return
+}
