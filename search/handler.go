@@ -147,6 +147,7 @@ func (s *SearchImpl) RelatedQuery(ctx context.Context, req *searchapi.RelatedQue
 func (s *SearchImpl) FindID(ctx context.Context, req *searchapi.FindIDRequest) (resp *searchapi.FindIDResponse, err error) {
 	// 调用数据库根据ID查询记录接口
 	ret, err := db.QueryRecord(context.Background(), []int32{req.Id})
+	resp = new(searchapi.FindIDResponse)
 	if len(ret) == 0 {
 		resp.Found = false
 	} else {
