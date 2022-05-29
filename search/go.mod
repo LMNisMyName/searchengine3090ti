@@ -5,6 +5,8 @@ go 1.18
 require (
 	github.com/apache/thrift v0.16.0
 	github.com/cloudwego/kitex v0.3.1
+	github.com/liyue201/gostl v1.0.1
+	github.com/mozillazg/go-pinyin v0.19.0
 	github.com/stretchr/testify v1.7.0
 	github.com/wangbin/jiebago v0.3.2
 	gorm.io/driver/mysql v1.3.3

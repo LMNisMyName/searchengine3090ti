@@ -22,6 +22,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"query":        kitex.NewMethodInfo(queryHandler, newSearchQueryArgs, newSearchQueryResult, false),
 		"add":          kitex.NewMethodInfo(addHandler, newSearchAddArgs, newSearchAddResult, false),
 		"relatedQuery": kitex.NewMethodInfo(relatedQueryHandler, newSearchRelatedQueryArgs, newSearchRelatedQueryResult, false),
+		"findID":       kitex.NewMethodInfo(findIDHandler, newSearchFindIDArgs, newSearchFindIDResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "searchapi",
@@ -91,6 +92,24 @@ func newSearchRelatedQueryResult() interface{} {
 	return searchapi.NewSearchRelatedQueryResult()
 }
 
+func findIDHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*searchapi.SearchFindIDArgs)
+	realResult := result.(*searchapi.SearchFindIDResult)
+	success, err := handler.(searchapi.Search).FindID(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newSearchFindIDArgs() interface{} {
+	return searchapi.NewSearchFindIDArgs()
+}
+
+func newSearchFindIDResult() interface{} {
+	return searchapi.NewSearchFindIDResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -126,6 +145,16 @@ func (p *kClient) RelatedQuery(ctx context.Context, req *searchapi.RelatedQueryR
 	_args.Req = req
 	var _result searchapi.SearchRelatedQueryResult
 	if err = p.c.Call(ctx, "relatedQuery", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FindID(ctx context.Context, req *searchapi.FindIDRequest) (r *searchapi.FindIDResponse, err error) {
+	var _args searchapi.SearchFindIDArgs
+	_args.Req = req
+	var _result searchapi.SearchFindIDResult
+	if err = p.c.Call(ctx, "findID", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

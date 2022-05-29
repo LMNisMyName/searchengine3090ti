@@ -1,13 +1,13 @@
 namespace go SearchApi
 
 struct AddRequest {
-    1: i32     id     //id序号（前端要尽量保证其不重复，最好是升序）
-    2: string  text   //描述图片的相关文本
-    3: string  url    //图片的url链接
+    1: i32     id       //id序号（前端要尽量保证其不重复，最好是升序）
+    2: string  text     //描述图片的相关文本
+    3: string  url      //图片的url链接
 }
 
 struct AddResponse {
-    1: bool  status   //数据库添加是否成功
+    1: bool  status     //数据库添加是否成功
 }
 
 struct QueryRequest {
@@ -28,12 +28,21 @@ struct QueryResponse {
 }
 
 struct RelatedQueryRequest{
-    1: string queryText      //用户在搜索框中输入的要查询的关键词
+    1: string queryText             //用户在搜索框中输入的要查询的关键词
 }
 
 struct RelatedQueryResponse{
-    1: list<string> relatedTexts  //与用户输入请求相关的文本
+    1: list<string> relatedTexts    //与用户输入请求相关的文本
 }
+
+struct FindIDResponse{
+    1: bool found                   //是否找到
+}
+
+struct FindIDRequest{
+    1: i32  id                      //要查找的ID   
+}
+
 
 service Search {
     //提供支持分页、关键词过滤的查询服务
@@ -42,4 +51,6 @@ service Search {
     AddResponse add(1: AddRequest req)
     //提供相关搜索服务
     RelatedQueryResponse relatedQuery(1: RelatedQueryRequest req)
+    //查询id是否存在
+    FindIDResponse  findID(1: FindIDRequest req) 
 }

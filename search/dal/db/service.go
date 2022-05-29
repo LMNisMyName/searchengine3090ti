@@ -89,6 +89,21 @@ func Query(ctx context.Context, keyword string) ([]int32, bool) {
 	return ids, true
 }
 
+//通过索引id数组查询索引内容(Id, Text, Url)数组
+func QueryRecord(ctx context.Context, ids []int32) ([]searchapi.AddRequest, error) {
+	ans := make([]searchapi.AddRequest, len(ids))
+	var err error
+	for i, id := range ids {
+		var recordEntry Record
+		result := DB.Model(&Record{}).First(&recordEntry, "record_id = ?", id)
+		if result.Error != nil {
+			err = result.Error
+		}
+		ans[i] = searchapi.AddRequest{Id: recordEntry.RecordId, Text: recordEntry.Text, Url: recordEntry.Url}
+	}
+	return ans, err
+}
+
 //查询与id相关的关键词
 func QueryKeyWords(ctx context.Context, id int32) ([]string, bool) {
 	var UserIDEntry UserID
