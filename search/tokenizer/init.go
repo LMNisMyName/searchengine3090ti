@@ -1,5 +1,0 @@
-package tokenizer
-
-func Init() {
-
-}
