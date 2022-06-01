@@ -27,6 +27,7 @@ const (
 	LoginErrCode            = 10003
 	UserNotExistErrCode     = 10004
 	UserAlreadyExistErrCode = 10005
+	//TODO more error
 )
 
 type ErrNo struct {

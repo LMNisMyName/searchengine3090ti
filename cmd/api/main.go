@@ -45,7 +45,7 @@ func main() {
 
 			return rpc.CheckUser(context.Background(), &userModel.CheckUserRequest{UserName: loginVar.UserName, Password: loginVar.PassWord})
 		},
-		//管理员
+		// 管理员?
 		// Authorizator: func(data interface{}, c *gin.Context) bool {
 		// 	if v, ok := data.(*User); ok && v.UserName == "admin" {
 		// 	  return true
@@ -63,8 +63,8 @@ func main() {
 	user1 := v1.Group("/user")
 	user1.POST("/login", authMiddleware.LoginHandler) //登录
 	user1.POST("/register", handlers.Register)        //注册
-	//user1.POST("/refresh",authMiddleware.RefreshHandler) //续签
-	//user1.POST("/logout",authMiddleware.LogoutHandler) //注销
+	// user1.POST("/refresh",authMiddleware.RefreshHandler) //续签
+	// user1.POST("/logout",authMiddleware.LogoutHandler) //注销
 	// collection1 := v1.Group("/collection")
 	// collection1.Use(authMiddleware.MiddlewareFunc())
 
