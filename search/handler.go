@@ -155,3 +155,10 @@ func (s *SearchImpl) FindID(ctx context.Context, req *searchapi.FindIDRequest) (
 	}
 	return
 }
+
+// QueryIDNumber implements the SearchImpl interface.
+func (s *SearchImpl) QueryIDNumber(ctx context.Context, req *searchapi.QueryIDNumberRequest) (resp *searchapi.QueryIDNumberResponse, err error) {
+	resp = new(searchapi.QueryIDNumberResponse)
+	resp.Number, err = db.QueryRecordsNumber(ctx)
+	return
+}

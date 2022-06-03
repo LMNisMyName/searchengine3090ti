@@ -119,3 +119,18 @@ func QueryKeyWords(ctx context.Context, id int32) ([]string, bool) {
 	}
 	return words, true
 }
+
+//查询当前记录的数目
+func QueryRecordsNumber(ctx context.Context) (ans int32, err error) {
+	var records []Record
+	result := DB.Model(&Record{}).Find(&records)
+	if result.Error != nil {
+		err = result.Error
+	}
+	if records == nil {
+		ans = 0
+	} else {
+		ans = int32(len(records))
+	}
+	return
+}

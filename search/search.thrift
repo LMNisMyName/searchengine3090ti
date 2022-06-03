@@ -43,6 +43,12 @@ struct FindIDRequest{
     1: i32  id                      //要查找的ID   
 }
 
+struct QueryIDNumberResponse {
+    1 : i32 number
+}
+
+struct QueryIDNumberRequest{
+}
 
 service Search {
     //提供支持分页、关键词过滤的查询服务
@@ -53,4 +59,6 @@ service Search {
     RelatedQueryResponse relatedQuery(1: RelatedQueryRequest req)
     //查询id是否存在
     FindIDResponse  findID(1: FindIDRequest req) 
+    //查询当前记录的格式
+    QueryIDNumberResponse queryIDNumber(1 : QueryIDNumberRequest req)
 }

@@ -15,6 +15,7 @@ type Client interface {
 	Add(ctx context.Context, req *searchapi.AddRequest, callOptions ...callopt.Option) (r *searchapi.AddResponse, err error)
 	RelatedQuery(ctx context.Context, req *searchapi.RelatedQueryRequest, callOptions ...callopt.Option) (r *searchapi.RelatedQueryResponse, err error)
 	FindID(ctx context.Context, req *searchapi.FindIDRequest, callOptions ...callopt.Option) (r *searchapi.FindIDResponse, err error)
+	QueryIDNumber(ctx context.Context, req *searchapi.QueryIDNumberRequest, callOptions ...callopt.Option) (r *searchapi.QueryIDNumberResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +65,9 @@ func (p *kSearchClient) RelatedQuery(ctx context.Context, req *searchapi.Related
 func (p *kSearchClient) FindID(ctx context.Context, req *searchapi.FindIDRequest, callOptions ...callopt.Option) (r *searchapi.FindIDResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FindID(ctx, req)
+}
+
+func (p *kSearchClient) QueryIDNumber(ctx context.Context, req *searchapi.QueryIDNumberRequest, callOptions ...callopt.Option) (r *searchapi.QueryIDNumberResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.QueryIDNumber(ctx, req)
 }

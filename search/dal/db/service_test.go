@@ -10,22 +10,22 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	// db.DropAllTable()
 	db.Init()
-	db.DelectAllEntry()
+	db.DropAllTable()
+	// db.CreateTable()
 	code := m.Run()
 	os.Exit(code)
 }
 
 func TestAddIndex(t *testing.T) {
-	req := searchapi.AddRequest{Id: 1, Text: "extra", Url: "www"}
-	keywords := []string{"extra"}
+	req := searchapi.AddRequest{Id: 2, Text: "shanghai", Url: "www.shanghai"}
+	keywords := []string{"shanghai"}
 	db.AddIndex(context.Background(), &req, keywords)
 }
 
 //通过关键词查询id
 func TestQuery(t *testing.T) {
-	ids, find := db.Query(context.Background(), "extra")
+	ids, find := db.Query(context.Background(), "shanghai")
 	fmt.Println(ids)
 	fmt.Println(find)
 	// assert.Equal(t, true, find)
