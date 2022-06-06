@@ -66,8 +66,15 @@ func main() {
 	// user1.POST("/refresh",authMiddleware.RefreshHandler) //续签
 	// user1.POST("/logout",authMiddleware.LogoutHandler) //注销
 
-	// collection1 := r.Group("/collection")
-	// collection1.Use(authMiddleware.MiddlewareFunc())
+	collection1 := r.Group("/collection")
+	collection1.Use(authMiddleware.MiddlewareFunc())
+	collection1.GET("/", handlers.MGetCollection)
+	collection1.GET("/:collt", handlers.GetCollection)
+	collection1.POST("/create", handlers.CreateCollection)
+	collection1.GET("/delete:collt", handlers.DeleteCollection)
+	collection1.POST("/:collt/setname", handlers.SetName)
+	collection1.POST("/:collt/add", handlers.AddEntry)
+	collection1.GET("/:collt/delete", handlers.DeleteEntry)
 
 	search1 := r.Group("/search")
 	search1.GET("/add", handlers.Add)

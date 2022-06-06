@@ -60,9 +60,6 @@ service Search {
     RelatedQueryResponse relatedQuery(1: RelatedQueryRequest req)
     //查询id是否存在
     FindIDResponse  findID(1: FindIDRequest req) 
-<<<<<<< HEAD
     //查询当前记录数目
     QueryIDNumberResponse queryIDNumber(1 : QueryIDNumberRequest req)
-=======
->>>>>>> mServiceCollection
 }

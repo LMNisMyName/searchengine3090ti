@@ -23,11 +23,11 @@ func DeleteEntry(c *gin.Context) {
 	}
 	deleteEntryVar.ColltID = int64(tmpI)
 
-	newEntry := c.PostForm("newentry")
-	if len(newEntry) == 0 {
+	entry := c.PostForm("entry")
+	if len(entry) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
 	}
-	tmpI, err = strconv.Atoi(newEntry)
+	tmpI, err = strconv.Atoi(entry)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
 	}
