@@ -28,6 +28,7 @@ func Register(c *gin.Context) {
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
 		return
+	} else {
+		SendResponse(c, errno.Success, nil)
 	}
-	SendResponse(c, errno.Success, nil)
 }

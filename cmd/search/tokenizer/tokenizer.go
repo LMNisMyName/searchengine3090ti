@@ -2,7 +2,9 @@ package tokenizer
 
 import (
 	"embed"
+
 	"searchengine3090ti/cmd/search/tokenizer/utils"
+
 	"strings"
 
 	"github.com/wangbin/jiebago"

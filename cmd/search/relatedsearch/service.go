@@ -1,4 +1,3 @@
-//Author: LMNisMyName
 package relatedsearch
 
 import (

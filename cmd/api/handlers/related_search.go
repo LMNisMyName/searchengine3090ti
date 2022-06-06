@@ -20,16 +20,18 @@ func RelatedSearch(c *gin.Context) {
 	//TODO
 
 	//RPC实际请求
+	relatedSearchVar.QueryText = c.Query("text")
 	req := &searchapi.RelatedQueryRequest{
 		QueryText: relatedSearchVar.QueryText,
 	}
 	relatedTexts, err := rpc.RelatedSearch(context.Background(), req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success,
+			map[string]interface{}{
+				constants.RelatedTexts: relatedTexts,
+			},
+		)
 	}
-	SendResponse(c, errno.Success,
-		map[string]interface{}{
-			constants.RelatedTexts: relatedTexts,
-		},
-	)
 }

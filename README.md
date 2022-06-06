@@ -15,17 +15,17 @@
 
 命令行下
 > 1.设置基本依赖服务
->> docker-compose up
+>> docker-compose up / sudo docker-compose up
 >>
 >2.运行search RPC服务器服务
 >>cd cmd/search
 >>sh build.sh
->>sh output/bootstrap.sh
+>>sh output/bootstrap.sh / sudo sh output/bootstrap.sh
 >>
 >3.运行User RPC 服务器服务
 >>cd cmd/user
 >>sh build.sh
->>sh output/bootstrap.sh
+>>sh output/bootstrap.sh / sudo sh output/bootstrap.sh
 >>
 >4.运行 API 服务器服务
 >>cd cmd/api

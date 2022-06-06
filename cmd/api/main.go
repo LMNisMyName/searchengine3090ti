@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"searchengine3090ti/cmd/api/handlers"
+	"searchengine3090ti/cmd/api/idgen"
 	"searchengine3090ti/cmd/api/rpc"
 	"searchengine3090ti/kitex_gen/userModel"
 	"searchengine3090ti/pkg/constants"
@@ -16,6 +17,7 @@ import (
 
 func Init() {
 	rpc.InitRPC()
+	idgen.Init()
 }
 
 func main() {
@@ -71,7 +73,7 @@ func main() {
 	search1 := v1.Group("/search")
 	search1.GET("/add", handlers.Add)
 	search1.POST("/query", handlers.Query)
-	search1.GET("relatedsearch", handlers.RelatedSearch)
+	search1.GET("/relatedsearch", handlers.RelatedSearch)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)

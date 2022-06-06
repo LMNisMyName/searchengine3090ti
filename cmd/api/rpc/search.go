@@ -14,7 +14,7 @@ import (
 	etcd "github.com/kitex-contrib/registry-etcd"
 )
 
-var searchClient search.Client
+var SearchClient search.Client
 
 func initSearchRpc() {
 	r, err := etcd.NewEtcdResolver([]string{constants.EtcdAddress})
@@ -33,12 +33,12 @@ func initSearchRpc() {
 	if err != nil {
 		panic(err)
 	}
-	searchClient = c
+	SearchClient = c
 }
 
 // Add add search index info
 func Add(ctx context.Context, req *searchapi.AddRequest) error {
-	resp, err := searchClient.Add(ctx, req)
+	resp, err := SearchClient.Add(ctx, req)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func Add(ctx context.Context, req *searchapi.AddRequest) error {
 
 // Query get search info
 func Query(ctx context.Context, req *searchapi.QueryRequest) (float64, int32, int32, int32, int32, []*searchapi.AddRequest, error) {
-	resp, err := searchClient.Query(ctx, req)
+	resp, err := SearchClient.Query(ctx, req)
 	if err != nil {
 		return 0, 0, 0, 0, 0, nil, err
 	}
@@ -59,7 +59,7 @@ func Query(ctx context.Context, req *searchapi.QueryRequest) (float64, int32, in
 
 // RelatedSearch get related-search info
 func RelatedSearch(ctx context.Context, req *searchapi.RelatedQueryRequest) ([]string, error) {
-	resp, err := searchClient.RelatedQuery(ctx, req)
+	resp, err := SearchClient.RelatedQuery(ctx, req)
 	if err != nil {
 		return nil, err
 	}

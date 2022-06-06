@@ -19,10 +19,11 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "Search"
 	handlerType := (*searchapi.Search)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"query":        kitex.NewMethodInfo(queryHandler, newSearchQueryArgs, newSearchQueryResult, false),
-		"add":          kitex.NewMethodInfo(addHandler, newSearchAddArgs, newSearchAddResult, false),
-		"relatedQuery": kitex.NewMethodInfo(relatedQueryHandler, newSearchRelatedQueryArgs, newSearchRelatedQueryResult, false),
-		"findID":       kitex.NewMethodInfo(findIDHandler, newSearchFindIDArgs, newSearchFindIDResult, false),
+		"query":         kitex.NewMethodInfo(queryHandler, newSearchQueryArgs, newSearchQueryResult, false),
+		"add":           kitex.NewMethodInfo(addHandler, newSearchAddArgs, newSearchAddResult, false),
+		"relatedQuery":  kitex.NewMethodInfo(relatedQueryHandler, newSearchRelatedQueryArgs, newSearchRelatedQueryResult, false),
+		"findID":        kitex.NewMethodInfo(findIDHandler, newSearchFindIDArgs, newSearchFindIDResult, false),
+		"queryIDNumber": kitex.NewMethodInfo(queryIDNumberHandler, newSearchQueryIDNumberArgs, newSearchQueryIDNumberResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "searchapi",
@@ -110,6 +111,24 @@ func newSearchFindIDResult() interface{} {
 	return searchapi.NewSearchFindIDResult()
 }
 
+func queryIDNumberHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*searchapi.SearchQueryIDNumberArgs)
+	realResult := result.(*searchapi.SearchQueryIDNumberResult)
+	success, err := handler.(searchapi.Search).QueryIDNumber(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newSearchQueryIDNumberArgs() interface{} {
+	return searchapi.NewSearchQueryIDNumberArgs()
+}
+
+func newSearchQueryIDNumberResult() interface{} {
+	return searchapi.NewSearchQueryIDNumberResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -155,6 +174,16 @@ func (p *kClient) FindID(ctx context.Context, req *searchapi.FindIDRequest) (r *
 	_args.Req = req
 	var _result searchapi.SearchFindIDResult
 	if err = p.c.Call(ctx, "findID", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryIDNumber(ctx context.Context, req *searchapi.QueryIDNumberRequest) (r *searchapi.QueryIDNumberResponse, err error) {
+	var _args searchapi.SearchQueryIDNumberArgs
+	_args.Req = req
+	var _result searchapi.SearchQueryIDNumberResult
+	if err = p.c.Call(ctx, "queryIDNumber", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

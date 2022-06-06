@@ -6,23 +6,32 @@ import (
 	searchapi "searchengine3090ti/kitex_gen/SearchApi"
 	"searchengine3090ti/pkg/constants"
 	"searchengine3090ti/pkg/errno"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Query(c *gin.Context) {
 	var searchQueryVar QueryParam
-	if err := c.ShouldBind(searchQueryVar); err != nil {
-		SendResponse(c, errno.ConvertErr(err), nil)
-	}
+	// if err := c.ShouldBind(searchQueryVar); err != nil {
+	// 	SendResponse(c, errno.ConvertErr(err), nil)
+	// }
 	//请求字段特殊情况处理
 	//TODO
-	if searchQueryVar.Page < 1 ||
-		searchQueryVar.Order > 1 ||
-		searchQueryVar.Order < 0 {
-		SendResponse(c, errno.ParamErr, nil)
-	}
+	// if searchQueryVar.Page < 1 ||
+	// 	searchQueryVar.Order > 1 ||
+	// 	searchQueryVar.Order < 0 {
+	// 	SendResponse(c, errno.ParamErr, nil)
+	// }
 	//RPC实际请求搜索
+	searchQueryVar.QueryText = c.PostForm("QueryText")
+	searchQueryVar.FilterText = c.PostForm("FilterText")
+	page_int, _ := strconv.Atoi(c.PostForm("page"))
+	limit_int, _ := strconv.Atoi(c.PostForm("limit"))
+	order_int, _ := strconv.Atoi(c.PostForm("order"))
+	searchQueryVar.Page = int32(page_int)
+	searchQueryVar.Limit = int32(limit_int)
+	searchQueryVar.Order = int32(order_int)
 	req := &searchapi.QueryRequest{
 		QueryText:  searchQueryVar.QueryText,
 		FilterText: searchQueryVar.FilterText,
@@ -33,15 +42,16 @@ func Query(c *gin.Context) {
 	time, total, pagecount, page, limit, contents, err := rpc.Query(context.Background(), req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success,
+			map[string]interface{}{
+				constants.Time:      time,
+				constants.Total:     total,
+				constants.PageCount: pagecount,
+				constants.Page:      page,
+				constants.Limit:     limit,
+				constants.Contents:  contents,
+			},
+		)
 	}
-	SendResponse(c, errno.Success,
-		map[string]interface{}{
-			constants.Time:      time,
-			constants.Total:     total,
-			constants.PageCount: pagecount,
-			constants.Page:      page,
-			constants.Limit:     limit,
-			constants.Contents:  contents,
-		},
-	)
 }

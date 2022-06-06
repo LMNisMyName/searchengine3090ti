@@ -3,6 +3,8 @@ package main
 import (
 	"net"
 	"searchengine3090ti/cmd/search/dal/db"
+	"searchengine3090ti/cmd/search/relatedsearch"
+	"searchengine3090ti/cmd/search/tokenizer"
 	searchapi "searchengine3090ti/kitex_gen/SearchApi/search"
 	"searchengine3090ti/pkg/constants"
 	"searchengine3090ti/pkg/middleware"
@@ -16,6 +18,8 @@ import (
 
 func Init() {
 	db.Init()
+	tokenizer.Init()
+	relatedsearch.Init()
 }
 
 func main() {

@@ -24,12 +24,27 @@ func Init() {
 	if err = DB.Use(gormopentracing.New()); err != nil {
 		panic(err)
 	}
-	DB.AutoMigrate(&Keyword{})
-	DB.AutoMigrate(&Record{})
+	// tables, _ := DB.Migrator().GetTables()
+	// if len(tables) == 0 {
+	// 	CreateTable()
+	// }
+	CreateTable()
 }
 
 func DelectAllEntry() {
 	DB.Where("1 = 1").Delete(&Keyword{})
 	DB.Where("1 = 1").Delete(&UserID{})
 	DB.Where("1 = 1").Delete(&Record{})
+}
+
+func DropAllTable() {
+	tables, _ := DB.Migrator().GetTables()
+	for _, table := range tables {
+		DB.Migrator().DropTable(table)
+	}
+}
+
+func CreateTable() {
+	DB.AutoMigrate(&Keyword{})
+	DB.AutoMigrate(&Record{})
 }

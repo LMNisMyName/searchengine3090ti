@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"searchengine3090ti/cmd/api/idgen"
 	"searchengine3090ti/cmd/api/rpc"
 	searchapi "searchengine3090ti/kitex_gen/SearchApi"
 	"searchengine3090ti/pkg/errno"
@@ -20,7 +21,9 @@ func Add(c *gin.Context) {
 	//TODO
 
 	//生成ID
-	//TODO
+	addVar.Id = idgen.GetID()
+	addVar.Text = c.Query("text")
+	addVar.Url = c.Query("url")
 
 	//RPC实际请求
 	req := &searchapi.AddRequest{
@@ -31,6 +34,7 @@ func Add(c *gin.Context) {
 	err := rpc.Add(context.Background(), req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success, nil)
 	}
-	SendResponse(c, errno.Success, nil)
 }
