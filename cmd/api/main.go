@@ -60,17 +60,16 @@ func main() {
 		TimeFunc:      time.Now,
 	})
 
-	v1 := r.Group("/v1")
-
-	user1 := v1.Group("/user")
+	user1 := r.Group("/user")
 	user1.POST("/login", authMiddleware.LoginHandler) //登录
 	user1.POST("/register", handlers.Register)        //注册
 	// user1.POST("/refresh",authMiddleware.RefreshHandler) //续签
 	// user1.POST("/logout",authMiddleware.LogoutHandler) //注销
-	// collection1 := v1.Group("/collection")
+
+	// collection1 := r.Group("/collection")
 	// collection1.Use(authMiddleware.MiddlewareFunc())
 
-	search1 := v1.Group("/search")
+	search1 := r.Group("/search")
 	search1.GET("/add", handlers.Add)
 	search1.POST("/query", handlers.Query)
 	search1.GET("/relatedsearch", handlers.RelatedSearch)
@@ -78,4 +77,12 @@ func main() {
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)
 	}
+	//https
+	// if err := http.ListenAndServeTLS(
+	// 	":8080",
+	// 	constants.certCrtPath,
+	// 	constants.certKeyPath,
+	// 	r); err != nil {
+	// 	klog.Fatal(err)
+	// }
 }

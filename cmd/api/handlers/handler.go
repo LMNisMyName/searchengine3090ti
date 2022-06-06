@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	searchapi "searchengine3090ti/kitex_gen/SearchApi"
 	"searchengine3090ti/pkg/errno"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +24,6 @@ func SendResponse(c *gin.Context, err error, data interface{}) {
 }
 
 //Search struct
-//TODO
 //搜索请求
 type QueryParam struct {
 	QueryText  string `json:"querytext"`  //用户在搜索框中输入的要查询的关键词
@@ -33,14 +31,6 @@ type QueryParam struct {
 	Page       int32  `json:"page"`       //用户请求的页码
 	Limit      int32  `json:"limit"`      //每页显示的请求数目
 	Order      int32  `json:"order"`      //排序方式
-}
-type SearchQuery struct {
-	Time      float64                 `json:"time"`
-	Total     int32                   `json:"total"`
-	PageCount int32                   `json:"pagecount"`
-	Page      int32                   `json:"page"`
-	Limit     int32                   `json:"limit"`
-	Contents  []*searchapi.AddRequest `json:"contents"`
 }
 
 //添加索引请求
@@ -54,12 +44,55 @@ type AddParam struct {
 type RelatedSearchParam struct {
 	QueryText string `json:"querytext"`
 }
-type RelatedQuery struct {
-	RelatedText []string `json:"relatedtext"`
-}
 
 //User struct
+//用户创建请求
 type UserParam struct {
 	UserName string `json:"username"`
 	PassWord string `json:"password"`
+}
+
+//Collection struct
+//收藏夹创建请求
+type CreateColltParam struct {
+	UserID int64  `json:"user_id"`
+	Name   string `json:"name"`
+}
+
+//获取收藏夹请求
+type GetColltParam struct {
+	UserID  int64 `json:"user_id"`
+	ColltID int64 `json:"collt_id"`
+}
+
+//获取用户收藏夹请求
+type MGetColltParam struct {
+	UserID int64 `json:"user_id"`
+}
+
+//删除收藏夹
+type DeleteColltParam struct {
+	UserID  int64 `json:"user_id"`
+	ColltID int64 `json:"collt_id"`
+}
+
+//添加收藏
+type AddEntryParam struct {
+	UserID   int64 `json:"user_id"`
+	ColltID  int64 `json:"collt_id"`
+	NewEntry int32 `json:"entry"`
+}
+
+//删除收藏
+type DeleteEntryParam struct {
+	UserID  int64 `json:"user_id"`
+	ColltID int64 `json:"collt_id"`
+	Entry   int32 `json:"entry"`
+}
+
+//设置收藏夹名
+type SetNameParam struct {
+	UserID  int64  `json:"user_id"`
+	ColltID int64  `json:"collt_id"`
+	NewName string `json:"newname"`
 }
