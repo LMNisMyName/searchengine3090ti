@@ -28,6 +28,10 @@ const (
 	UserNotExistErrCode     = 10004
 	UserAlreadyExistErrCode = 10005
 	//TODO more error
+	CollectionNotExitErrCode      = 10006
+	CollectionAlreadyExistErrCode = 10007
+	EntryNotExitErrCode           = 10008
+	EntryAlreadyExitErrCode       = 10009
 )
 
 type ErrNo struct {
@@ -49,12 +53,16 @@ func (e ErrNo) WithMessage(msg string) ErrNo {
 }
 
 var (
-	Success             = NewErrNo(SuccessCode, "Success")
-	ServiceErr          = NewErrNo(ServiceErrCode, "Service is unable to start successfully")
-	ParamErr            = NewErrNo(ParamErrCode, "Wrong Parameter has been given")
-	LoginErr            = NewErrNo(LoginErrCode, "Wrong username or password")
-	UserNotExistErr     = NewErrNo(UserNotExistErrCode, "User does not exists")
-	UserAlreadyExistErr = NewErrNo(UserAlreadyExistErrCode, "User already exists")
+	Success                   = NewErrNo(SuccessCode, "Success")
+	ServiceErr                = NewErrNo(ServiceErrCode, "Service is unable to start successfully")
+	ParamErr                  = NewErrNo(ParamErrCode, "Wrong Parameter has been given")
+	LoginErr                  = NewErrNo(LoginErrCode, "Wrong username or password")
+	UserNotExistErr           = NewErrNo(UserNotExistErrCode, "User does not exists")
+	UserAlreadyExistErr       = NewErrNo(UserAlreadyExistErrCode, "User already exists")
+	CollectionAlreadyExistErr = NewErrNo(CollectionAlreadyExistErrCode, "Collection already exists")
+	CollectionNotExitErr      = NewErrNo(CollectionNotExitErrCode, "Collection not exits")
+	EntryAlreadyExitErr       = NewErrNo(EntryAlreadyExitErrCode, "Entry already exits")
+	EntryNotExitErr           = NewErrNo(EntryNotExitErrCode, "Entry not exits")
 )
 
 // ConvertErr convert error to Errno

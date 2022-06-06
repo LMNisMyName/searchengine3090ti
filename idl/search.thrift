@@ -53,5 +53,4 @@ service Search {
     RelatedQueryResponse relatedQuery(1: RelatedQueryRequest req)
     //查询id是否存在
     FindIDResponse  findID(1: FindIDRequest req) 
-
 }
