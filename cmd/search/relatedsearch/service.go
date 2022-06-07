@@ -1,6 +1,8 @@
 package relatedsearch
 
 import (
+	"bytes"
+
 	"github.com/liyue201/gostl/ds/priorityqueue"
 	"github.com/liyue201/gostl/ds/queue"
 	"github.com/mozillazg/go-pinyin"
@@ -15,8 +17,8 @@ type TrieNode struct {
 }
 
 type SearchTrie struct {
-	root   *TrieNode //提供英文（小写字母）相关搜索
-	rootCh *TrieNode //提供中文相关搜索
+	root   *TrieNode //提供纯英文相关搜索
+	rootCh *TrieNode //提供中英文混合相关搜索
 }
 
 var searchTrie *SearchTrie
@@ -35,6 +37,7 @@ func Init() {
 	}
 }
 
+//将纯中文字符串转化为汉语拼音（小写英文字符）
 func GetPinYin(text string) string {
 	a := pinyin.NewArgs()
 	pys := pinyin.Pinyin(text, a)
@@ -45,13 +48,29 @@ func GetPinYin(text string) string {
 	return ans
 }
 
-//根据当前字符串的首字母判断是中文还是英文字符串
-func isEn(text string) bool {
-	if len(text) == 0 {
-		return true
+//将中英文混合字符串转化为小写英文字符串
+func GetPinYinForMix(text string) string {
+	var b bytes.Buffer
+	for _, c := range text {
+		if c > 127 {
+			b.WriteString(GetPinYin(string(c)))
+		} else {
+			if c >= 65 && c <= 90 {
+				b.WriteRune(c - 65 + 97)
+			} else if c >= 97 && c <= 122 {
+				b.WriteRune(c)
+			}
+		}
 	}
-	if v := text[0] - 'a'; v >= 26 {
-		return false
+	return b.String()
+}
+
+//根据当前字符串的首字母判断是纯英文还是中英文字符串
+func isEn(text string) bool {
+	for _, c := range text {
+		if c > 127 {
+			return false
+		}
 	}
 	return true
 }
@@ -60,14 +79,12 @@ func isEn(text string) bool {
 //判断内容是中文内容还是英文内容, 分别将其添加到对应的树下
 func Add(text string) {
 	var curNode *TrieNode
-	var textEn string
 	if isEn(text) {
 		curNode = searchTrie.root
-		textEn = text
 	} else {
 		curNode = searchTrie.rootCh
-		textEn = GetPinYin(text)
 	}
+	textEn := GetPinYinForMix(text)
 	for _, c := range textEn {
 		i := c - 'a'
 		if curNode.sons[i] == nil {
@@ -80,20 +97,8 @@ func Add(text string) {
 	curNode.weight++
 }
 
-//以输入参数为前缀在搜索字典树中查询所有记录
-//判断内容是中文内容还是英文内容,分别调用相关搜索树
-//返回所有相关搜索结果且不按照权重进行排序
-func SearchAll(prefix string) []string {
+func SearchInCurNode(prefixEn string, curNode *TrieNode) []string {
 	ans := []string{}
-	var curNode *TrieNode
-	var prefixEn string
-	if isEn(prefix) {
-		curNode = searchTrie.root
-		prefixEn = prefix
-	} else {
-		curNode = searchTrie.rootCh
-		prefixEn = GetPinYin(prefix)
-	}
 	//1. 找到前缀字符串最后一个字母所在的节点
 	for _, c := range prefixEn {
 		i := c - 'a'
@@ -122,37 +127,12 @@ func SearchAll(prefix string) []string {
 	return ans
 }
 
-//以输入参数为前缀在搜索字典树中查询前K条记录
-//建立一个小根堆，如果堆内元素小于k个直接入堆
-//否则与堆顶元素进行对比，大入堆
-func SearchTopK(prefix string, k int) []string {
-	pq := priorityqueue.New(priorityqueue.WithComparator(func(l, r any) int {
-		if l == r {
-			return 0
-		}
-		switch l.(type) {
-		case *TrieNode:
-			if (l.(*TrieNode)).weight > (r.(*TrieNode)).weight {
-				return 1
-			}
-			return -1
-		}
-		return 1
-	}))
-	var curNode *TrieNode
-	var prefixEn string
-	if isEn(prefix) {
-		curNode = searchTrie.root
-		prefixEn = prefix
-	} else {
-		curNode = searchTrie.rootCh
-		prefixEn = GetPinYin(prefix)
-	}
+func SearchTopKInCurNode(pq *priorityqueue.PriorityQueue, k int, prefixEn string, curNode *TrieNode) {
 	//1. 找到前缀字符串最后一个字母所在的节点
 	for _, c := range prefixEn {
 		i := c - 'a'
 		if curNode.sons[i] == nil {
-			return []string{}
+			return
 		}
 		curNode = curNode.sons[i]
 	}
@@ -180,6 +160,38 @@ func SearchTopK(prefix string, k int) []string {
 			break
 		}
 	}
+}
+
+//以输入参数为前缀在两颗字典树中查询所有记录
+//返回所有相关搜索结果且不按照权重进行排序
+func SearchAll(prefix string) []string {
+	ans := []string{}
+	prefixEn := GetPinYinForMix(prefix)
+	ans = append(ans, SearchInCurNode(prefixEn, searchTrie.root)...)
+	ans = append(ans, SearchInCurNode(prefixEn, searchTrie.rootCh)...)
+	return ans
+}
+
+//以输入参数为前缀在搜索字典树中查询前K条记录
+//建立一个小根堆，如果堆内元素小于k个直接入堆
+//否则与堆顶元素进行对比，大入堆
+func SearchTopK(prefix string, k int) []string {
+	pq := priorityqueue.New(priorityqueue.WithComparator(func(l, r any) int {
+		if l == r {
+			return 0
+		}
+		switch l.(type) {
+		case *TrieNode:
+			if (l.(*TrieNode)).weight > (r.(*TrieNode)).weight {
+				return 1
+			}
+			return -1
+		}
+		return 1
+	}))
+	prefixEn := GetPinYinForMix(prefix)
+	SearchTopKInCurNode(pq, k, prefixEn, searchTrie.root)
+	SearchTopKInCurNode(pq, k, prefixEn, searchTrie.rootCh)
 	ans := make([]string, pq.Size())
 	index := pq.Size() - 1
 	for {

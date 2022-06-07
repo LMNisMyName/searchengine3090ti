@@ -8,6 +8,7 @@ import (
 	"searchengine3090ti/cmd/search/relatedsearch"
 	"searchengine3090ti/cmd/search/tokenizer"
 	searchapi "searchengine3090ti/kitex_gen/SearchApi"
+	"sync"
 	"time"
 
 	"github.com/liyue201/gostl/algorithm/sort"
@@ -35,20 +36,38 @@ func (s *SearchImpl) Query(ctx context.Context, req *searchapi.QueryRequest) (re
 	//1.调用两次数据库的查询id服务，分别查询要搜索的id和要屏蔽的id，建立id与其出现次数的映射
 	queryKeywords := tokenizer.MyTokenizer.Cut(req.QueryText)
 	filterKeyWords := tokenizer.MyTokenizer.Cut(req.FilterText)
+	//使用Go协程加速idMap的更新和删除
+	//使用锁用来保护idMap，使用waitGroup用来同步协程退出
+	var mux sync.Mutex
+	wg := sync.WaitGroup{}
+	wg.Add(len(queryKeywords))
 	for _, qword := range queryKeywords {
-		if ids, find := db.Query(ctx, qword); find {
-			for _, id := range ids {
-				idMap[id] += 1
+		go func(qword string) {
+			if ids, find := db.Query(ctx, qword); find {
+				for _, id := range ids {
+					mux.Lock()
+					idMap[id] += 1
+					mux.Unlock()
+				}
 			}
-		}
+			wg.Done()
+		}(qword)
 	}
+	wg.Wait()
+	wg.Add(len(filterKeyWords))
 	for _, fword := range filterKeyWords {
-		if ids, find := db.Query(ctx, fword); find {
-			for _, id := range ids {
-				delete(idMap, id)
+		go func(fword string) {
+			if ids, find := db.Query(ctx, fword); find {
+				for _, id := range ids {
+					mux.Lock()
+					delete(idMap, id)
+					mux.Unlock()
+				}
 			}
-		}
+			wg.Done()
+		}(fword)
 	}
+	wg.Wait()
 	//2. 对id差集按照出现次数（表示关联度）从大到小进行排序
 	v := vector.New() //v是保存根据出现次数排序的数组
 	for id := range idMap {
