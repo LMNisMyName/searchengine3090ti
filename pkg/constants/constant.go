@@ -2,6 +2,9 @@
 package constants
 
 const (
+	//worker id
+	WorkerID = 1
+
 	//keys
 	SecretKey   = "addYourKeyHere" //Should be modify
 	IdentityKey = "id"
