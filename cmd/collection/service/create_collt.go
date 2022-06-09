@@ -28,6 +28,6 @@ func (c *CreateColltService) CreateCollection(req *collectionModel.CreateColltRe
 	return db.CreateCollection(c.ctx, []*db.Collection{{
 		UserID:  req.UserId,
 		Name:    req.Name,
-		Entries: make([]int32, 0),
+		Entries: make([]int64, 0),
 	}})
 }

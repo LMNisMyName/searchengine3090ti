@@ -49,7 +49,7 @@ func Add(ctx context.Context, req *searchapi.AddRequest) error {
 }
 
 // Query get search info
-func Query(ctx context.Context, req *searchapi.QueryRequest) (float64, int32, int32, int32, int32, []*searchapi.AddRequest, error) {
+func Query(ctx context.Context, req *searchapi.QueryRequest) (float64, int64, int64, int64, int64, []*searchapi.AddRequest, error) {
 	resp, err := SearchClient.Query(ctx, req)
 	if err != nil {
 		return 0, 0, 0, 0, 0, nil, err

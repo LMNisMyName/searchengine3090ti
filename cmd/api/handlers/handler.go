@@ -28,14 +28,14 @@ func SendResponse(c *gin.Context, err error, data interface{}) {
 type QueryParam struct {
 	QueryText  string `json:"querytext"`  //用户在搜索框中输入的要查询的关键词
 	FilterText string `json:"filtertext"` //用户请求过滤的关键词
-	Page       int32  `json:"page"`       //用户请求的页码
-	Limit      int32  `json:"limit"`      //每页显示的请求数目
-	Order      int32  `json:"order"`      //排序方式
+	Page       int64  `json:"page"`       //用户请求的页码
+	Limit      int64  `json:"limit"`      //每页显示的请求数目
+	Order      int64  `json:"order"`      //排序方式
 }
 
 //添加索引请求
 type AddParam struct {
-	Id   int32  `json:"id"`
+	Id   int64  `json:"id"`
 	Text string `json:"text"`
 	Url  string `json:"url"`
 }
@@ -80,14 +80,14 @@ type DeleteColltParam struct {
 type AddEntryParam struct {
 	UserID   int64 `json:"user_id"`
 	ColltID  int64 `json:"collt_id"`
-	NewEntry int32 `json:"entry"`
+	NewEntry int64 `json:"entry"`
 }
 
 //删除收藏
 type DeleteEntryParam struct {
 	UserID  int64 `json:"user_id"`
 	ColltID int64 `json:"collt_id"`
-	Entry   int32 `json:"entry"`
+	Entry   int64 `json:"entry"`
 }
 
 //设置收藏夹名

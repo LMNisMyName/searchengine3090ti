@@ -13,7 +13,7 @@ type Collection struct {
 	UserID int64 `json:"user_id"`
 
 	Name    string  `json:"name"`
-	Entries []int32 `json:"entries"`
+	Entries []int64 `json:"entries"`
 }
 
 func (c *Collection) TableName() string {
@@ -53,7 +53,7 @@ func DeleteCollection(ctx context.Context, UserID, ColltID int64) error {
 }
 
 //添加收藏夹记录
-func AddEntry(ctx context.Context, UserID, ColltID int64, newEntry int32) error {
+func AddEntry(ctx context.Context, UserID, ColltID int64, newEntry int64) error {
 	res := make([]*Collection, 0)
 	if err := DB.WithContext(ctx).Where("user_id = ? AND id = ?", UserID, uint(ColltID)).Find(&res).First(&res).Error; err != nil {
 		return err
@@ -66,7 +66,7 @@ func AddEntry(ctx context.Context, UserID, ColltID int64, newEntry int32) error 
 }
 
 //删除收藏夹中记录
-func DeleteEntry(ctx context.Context, UserID, ColltID int64, targetEntry int32) error {
+func DeleteEntry(ctx context.Context, UserID, ColltID int64, targetEntry int64) error {
 	res := make([]*Collection, 0)
 	if err := DB.WithContext(ctx).Where("user_id = ? AND id = ?", UserID, uint(ColltID)).Find(&res).First(&res).Error; err != nil {
 		return err

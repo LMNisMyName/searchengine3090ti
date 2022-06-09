@@ -32,7 +32,7 @@ func AddEntry(c *gin.Context) {
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
 	}
-	addEntryVar.NewEntry = int32(tmpI)
+	addEntryVar.NewEntry = int64(tmpI)
 
 	claim := jwt.ExtractClaims(c)
 	userId := claim[constants.IdentityKey].(int64)

@@ -12,7 +12,7 @@ message Collection{
     int64 user_id = 1;
     int64 collt_id = 2;
     string name = 3;
-    repeated int32 entry = 4;
+    repeated int64 entry = 4;
 }
 
 message CreateColltRequest{
@@ -29,7 +29,7 @@ message GetColltRequest{
 }
 message GetColltResponse{
     string name = 1;
-    repeated int32 entry = 2;
+    repeated int64 entry = 2;
     BaseResp base_resp = 3;
 }
 
@@ -56,7 +56,7 @@ message DeleteColltResponse{
 message AddEntryRequest{
     int64 user_id = 1;
     int64 collt_id = 2;
-    int32 newEntry = 3;
+    int64 newEntry = 3;
 }
 message AddEntryResponse{
     BaseResp base_resp = 1;
@@ -65,7 +65,7 @@ message AddEntryResponse{
 message DeleteEntryRequest{
     int64 user_id = 1;
     int64 collt_id = 2;
-    int32 entry = 3;
+    int64 entry = 3;
 }
 message DeleteEntryResponse{
     BaseResp base_resp = 1;

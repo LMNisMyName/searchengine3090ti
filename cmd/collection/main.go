@@ -20,7 +20,7 @@ func Init() {
 
 func main() {
 	//微服务注册
-	r, err := etcd.NewEtcdRegistry([]string{constants.CollectionServiceName})
+	r, err := etcd.NewEtcdRegistry([]string{constants.EtcdAddress})
 	if err != nil {
 		panic(err)
 	}

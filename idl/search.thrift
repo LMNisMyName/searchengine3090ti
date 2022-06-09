@@ -1,7 +1,7 @@
 namespace go SearchApi
 
 struct AddRequest {
-    1: i32     id       //id序号（前端要尽量保证其不重复，最好是升序）
+    1: i64     id       //id序号（前端要尽量保证其不重复，最好是升序）
     2: string  text     //描述图片的相关文本
     3: string  url      //图片的url链接
 }
@@ -13,17 +13,17 @@ struct AddResponse {
 struct QueryRequest {
   1: string queryText   //用户在搜索框中输入的要查询的关键词
   2: string filterText  //用户请求过滤的关键词
-  3: i32    page        //用户请求的页码
-  4: i32    limit       //每页显示的请求数目
-  5: i32    order       //排序方式
+  3: i64    page        //用户请求的页码
+  4: i64    limit       //每页显示的请求数目
+  5: i64    order       //排序方式
 }
 
 struct QueryResponse {
   1: double time        //查询所需时间
-  2: i32    total       //查询到的条目总数 
-  3: i32    pagecount   //查询到的页数 
-  4: i32    page        //当前页码 
-  5: i32    limit       //每页展示的数目  
+  2: i64    total       //查询到的条目总数 
+  3: i64    pagecount   //查询到的页数 
+  4: i64    page        //当前页码 
+  5: i64    limit       //每页展示的数目  
   6: list<AddRequest>      contents //查询到的内容
 }
 
@@ -40,11 +40,11 @@ struct FindIDResponse{
 }
 
 struct FindIDRequest{
-    1: i32  id                      //要查找的ID   
+    1: i64  id                      //要查找的ID   
 }
 
 struct QueryIDNumberResponse {
-    1 : i32 number
+    1 : i64 number
 }
 
 struct QueryIDNumberRequest{

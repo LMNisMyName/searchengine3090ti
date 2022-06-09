@@ -18,13 +18,13 @@ type Keyword struct {
 
 type UserID struct {
 	gorm.Model
-	UID      int32
+	UID      int64
 	Keywords []*Keyword `gorm:"many2many:keyword_userids;"`
 }
 
 type Record struct {
 	gorm.Model
-	RecordId int32
+	RecordId int64
 	Text     string
 	Url      string
 }
@@ -74,15 +74,15 @@ func AddIndex(ctx context.Context, req *searchapi.AddRequest, keywords []string)
 }
 
 //查询与关键词相关的索引id数组
-func Query(ctx context.Context, keyword string) ([]int32, bool) {
+func Query(ctx context.Context, keyword string) ([]int64, bool) {
 	var keywordEntry Keyword
 	result := DB.Model(&Keyword{}).First(&keywordEntry, "word = ?", keyword)
 	if result.Error != nil {
-		return []int32{}, false
+		return []int64{}, false
 	}
 	userIds := []UserID{}
 	DB.Model(&keywordEntry).Association("UserIDs").Find(&userIds)
-	ids := make([]int32, len(userIds))
+	ids := make([]int64, len(userIds))
 	for index, userId := range userIds {
 		ids[index] = userId.UID
 	}
@@ -90,7 +90,7 @@ func Query(ctx context.Context, keyword string) ([]int32, bool) {
 }
 
 //通过索引id数组查询索引内容(Id, Text, Url)数组
-func QueryRecord(ctx context.Context, ids []int32) ([]searchapi.AddRequest, error) {
+func QueryRecord(ctx context.Context, ids []int64) ([]searchapi.AddRequest, error) {
 	ans := make([]searchapi.AddRequest, len(ids))
 	var err error
 	for i, id := range ids {
@@ -105,7 +105,7 @@ func QueryRecord(ctx context.Context, ids []int32) ([]searchapi.AddRequest, erro
 }
 
 //查询与id相关的关键词
-func QueryKeyWords(ctx context.Context, id int32) ([]string, bool) {
+func QueryKeyWords(ctx context.Context, id int64) ([]string, bool) {
 	var UserIDEntry UserID
 	result := DB.Model(&UserID{}).First(&UserIDEntry, "uid = ?", id)
 	if result.Error != nil {
@@ -121,7 +121,7 @@ func QueryKeyWords(ctx context.Context, id int32) ([]string, bool) {
 }
 
 //查询当前记录的数目
-func QueryRecordsNumber(ctx context.Context) (ans int32, err error) {
+func QueryRecordsNumber(ctx context.Context) (ans int64, err error) {
 	var records []Record
 	result := DB.Model(&Record{}).Find(&records)
 	if result.Error != nil {
@@ -130,7 +130,7 @@ func QueryRecordsNumber(ctx context.Context) (ans int32, err error) {
 	if records == nil {
 		ans = 0
 	} else {
-		ans = int32(len(records))
+		ans = int64(len(records))
 	}
 	return
 }

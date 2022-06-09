@@ -27,7 +27,12 @@
 >>sh build.sh
 >>sh output/bootstrap.sh / sudo sh output/bootstrap.sh
 >>
->4.运行 API 服务器服务
+>4.运行Collecyion 服务器服务
+>>cd cmd/collection
+>>sh build.sh
+>>sh output/bootstrap.sh / sudo sh output/bootstrap.sh
+>>
+>5.运行 API 服务器服务
 >>cd cmd/api
 >>chmod +x run.sh
 >>./run.sh

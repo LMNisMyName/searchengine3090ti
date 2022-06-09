@@ -31,7 +31,7 @@ func DeleteEntry(c *gin.Context) {
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
 	}
-	deleteEntryVar.Entry = int32(tmpI)
+	deleteEntryVar.Entry = int64(tmpI)
 
 	claim := jwt.ExtractClaims(c)
 	userId := claim[constants.IdentityKey].(int64)

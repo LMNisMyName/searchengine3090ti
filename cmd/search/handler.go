@@ -32,7 +32,7 @@ func (s *SearchImpl) Query(ctx context.Context, req *searchapi.QueryRequest) (re
 	}()
 	//0.将当前查询添加到字典树当中
 	relatedsearch.Add(req.QueryText)
-	idMap := make(map[int32]float64) //记录每个ID及其出现的次数
+	idMap := make(map[int64]float64) //记录每个ID及其出现的次数
 	//1.调用两次数据库的查询id服务，分别查询要搜索的id和要屏蔽的id，建立id与其出现次数的映射
 	queryKeywords := tokenizer.MyTokenizer.Cut(req.QueryText)
 	filterKeyWords := tokenizer.MyTokenizer.Cut(req.FilterText)
@@ -83,8 +83,8 @@ func (s *SearchImpl) Query(ctx context.Context, req *searchapi.QueryRequest) (re
 				return 0
 			}
 			switch l.(type) {
-			case int32:
-				if idMap[l.(int32)] > idMap[r.(int32)] {
+			case int64:
+				if idMap[l.(int64)] > idMap[r.(int64)] {
 					return 1
 				} else {
 					return -1
@@ -97,21 +97,21 @@ func (s *SearchImpl) Query(ctx context.Context, req *searchapi.QueryRequest) (re
 	resp = new(searchapi.QueryResponse)
 	resp.Page = req.Page
 	resp.Limit = req.Limit
-	resp.Pagecount = int32(math.Ceil((float64(v.Size()) / float64(req.Limit))))
+	resp.Pagecount = int64(math.Ceil((float64(v.Size()) / float64(req.Limit))))
 	resp.Contents = make([]*searchapi.AddRequest, 0)
 	lIndex := (req.Page - 1) * req.Limit
 	rIndex := req.Page * req.Limit
-	if rIndex > int32(v.Size()) {
-		rIndex = int32(v.Size())
+	if rIndex > int64(v.Size()) {
+		rIndex = int64(v.Size())
 	}
-	if lIndex >= int32(v.Size()) {
+	if lIndex >= int64(v.Size()) {
 		//窗口超过数组上界
 		return
 	} else {
 		resp.Total = rIndex - lIndex
-		ids := make([]int32, resp.Total)
+		ids := make([]int64, resp.Total)
 		for i := lIndex; i < rIndex; i++ {
-			ids[i-lIndex] = v.At(int(i)).(int32)
+			ids[i-lIndex] = v.At(int(i)).(int64)
 		}
 		//4. 调用数据库查询records服务
 		records, err := db.QueryRecord(ctx, ids)
@@ -152,7 +152,7 @@ func (s *SearchImpl) RelatedQuery(ctx context.Context, req *searchapi.RelatedQue
 //FindID implements the SearchImpl interface.
 func (s *SearchImpl) FindID(ctx context.Context, req *searchapi.FindIDRequest) (resp *searchapi.FindIDResponse, err error) {
 	// 调用数据库根据ID查询记录接口
-	ret, err := db.QueryRecord(context.Background(), []int32{req.Id})
+	ret, err := db.QueryRecord(context.Background(), []int64{req.Id})
 	resp = new(searchapi.FindIDResponse)
 	if len(ret) == 0 {
 		resp.Found = false

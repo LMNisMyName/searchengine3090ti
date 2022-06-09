@@ -29,9 +29,9 @@ func Query(c *gin.Context) {
 	page_int, _ := strconv.Atoi(c.PostForm("page"))
 	limit_int, _ := strconv.Atoi(c.PostForm("limit"))
 	order_int, _ := strconv.Atoi(c.PostForm("order"))
-	searchQueryVar.Page = int32(page_int)
-	searchQueryVar.Limit = int32(limit_int)
-	searchQueryVar.Order = int32(order_int)
+	searchQueryVar.Page = int64(page_int)
+	searchQueryVar.Limit = int64(limit_int)
+	searchQueryVar.Order = int64(order_int)
 	req := &searchapi.QueryRequest{
 		QueryText:  searchQueryVar.QueryText,
 		FilterText: searchQueryVar.FilterText,

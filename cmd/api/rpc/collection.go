@@ -25,7 +25,6 @@ func initCollectionRpc() {
 		constants.CollectionServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithMiddleware(middleware.ClientMiddleware),
-		client.WithMuxConnection(1),
 		client.WithMuxConnection(1),                       // mux
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
@@ -60,7 +59,7 @@ func DeleteCollection(ctx context.Context, req *collectionModel.DeleteColltReque
 	return nil
 }
 
-func GetCollection(ctx context.Context, req *collectionModel.GetColltRequest) (string, []int32, error) {
+func GetCollection(ctx context.Context, req *collectionModel.GetColltRequest) (string, []int64, error) {
 	resp, err := collectionClient.GetCollection(ctx, req)
 	if err != nil {
 		return "", nil, err

@@ -28,6 +28,7 @@ func Init() {
 	// if len(tables) == 0 {
 	// 	CreateTable()
 	// }
+	DropAllTable()
 	CreateTable()
 }
 

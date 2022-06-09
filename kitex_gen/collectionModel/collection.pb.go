@@ -92,7 +92,7 @@ type Collection struct {
 	UserId  int64   `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	ColltId int64   `protobuf:"varint,2,opt,name=collt_id,json=colltId,proto3" json:"collt_id,omitempty"`
 	Name    string  `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Entry   []int32 `protobuf:"varint,4,rep,packed,name=entry,proto3" json:"entry,omitempty"`
+	Entry   []int64 `protobuf:"varint,4,rep,packed,name=entry,proto3" json:"entry,omitempty"`
 }
 
 func (x *Collection) Reset() {
@@ -148,7 +148,7 @@ func (x *Collection) GetName() string {
 	return ""
 }
 
-func (x *Collection) GetEntry() []int32 {
+func (x *Collection) GetEntry() []int64 {
 	if x != nil {
 		return x.Entry
 	}
@@ -318,7 +318,7 @@ type GetColltResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	Name     string    `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Entry    []int32   `protobuf:"varint,2,rep,packed,name=entry,proto3" json:"entry,omitempty"`
+	Entry    []int64   `protobuf:"varint,2,rep,packed,name=entry,proto3" json:"entry,omitempty"`
 	BaseResp *BaseResp `protobuf:"bytes,3,opt,name=base_resp,json=baseResp,proto3" json:"base_resp,omitempty"`
 }
 
@@ -361,7 +361,7 @@ func (x *GetColltResponse) GetName() string {
 	return ""
 }
 
-func (x *GetColltResponse) GetEntry() []int32 {
+func (x *GetColltResponse) GetEntry() []int64 {
 	if x != nil {
 		return x.Entry
 	}
@@ -586,7 +586,7 @@ type AddEntryRequest struct {
 
 	UserId   int64 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	ColltId  int64 `protobuf:"varint,2,opt,name=collt_id,json=colltId,proto3" json:"collt_id,omitempty"`
-	NewEntry int32 `protobuf:"varint,3,opt,name=newEntry,proto3" json:"newEntry,omitempty"`
+	NewEntry int64 `protobuf:"varint,3,opt,name=newEntry,proto3" json:"newEntry,omitempty"`
 }
 
 func (x *AddEntryRequest) Reset() {
@@ -635,7 +635,7 @@ func (x *AddEntryRequest) GetColltId() int64 {
 	return 0
 }
 
-func (x *AddEntryRequest) GetNewEntry() int32 {
+func (x *AddEntryRequest) GetNewEntry() int64 {
 	if x != nil {
 		return x.NewEntry
 	}
@@ -696,7 +696,7 @@ type DeleteEntryRequest struct {
 
 	UserId  int64 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	ColltId int64 `protobuf:"varint,2,opt,name=collt_id,json=colltId,proto3" json:"collt_id,omitempty"`
-	Entry   int32 `protobuf:"varint,3,opt,name=entry,proto3" json:"entry,omitempty"`
+	Entry   int64 `protobuf:"varint,3,opt,name=entry,proto3" json:"entry,omitempty"`
 }
 
 func (x *DeleteEntryRequest) Reset() {
@@ -745,7 +745,7 @@ func (x *DeleteEntryRequest) GetColltId() int64 {
 	return 0
 }
 
-func (x *DeleteEntryRequest) GetEntry() int32 {
+func (x *DeleteEntryRequest) GetEntry() int64 {
 	if x != nil {
 		return x.Entry
 	}

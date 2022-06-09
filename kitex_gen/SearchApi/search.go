@@ -10,7 +10,7 @@ import (
 )
 
 type AddRequest struct {
-	Id   int32  `thrift:"id,1" json:"id"`
+	Id   int64  `thrift:"id,1" json:"id"`
 	Text string `thrift:"text,2" json:"text"`
 	Url  string `thrift:"url,3" json:"url"`
 }
@@ -19,7 +19,7 @@ func NewAddRequest() *AddRequest {
 	return &AddRequest{}
 }
 
-func (p *AddRequest) GetId() (v int32) {
+func (p *AddRequest) GetId() (v int64) {
 	return p.Id
 }
 
@@ -30,7 +30,7 @@ func (p *AddRequest) GetText() (v string) {
 func (p *AddRequest) GetUrl() (v string) {
 	return p.Url
 }
-func (p *AddRequest) SetId(val int32) {
+func (p *AddRequest) SetId(val int64) {
 	p.Id = val
 }
 func (p *AddRequest) SetText(val string) {
@@ -66,7 +66,7 @@ func (p *AddRequest) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -126,7 +126,7 @@ ReadStructEndError:
 }
 
 func (p *AddRequest) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Id = v
@@ -190,10 +190,10 @@ WriteStructEndError:
 }
 
 func (p *AddRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("id", thrift.I32, 1); err != nil {
+	if err = oprot.WriteFieldBegin("id", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Id); err != nil {
+	if err := oprot.WriteI64(p.Id); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -265,7 +265,7 @@ func (p *AddRequest) DeepEqual(ano *AddRequest) bool {
 	return true
 }
 
-func (p *AddRequest) Field1DeepEqual(src int32) bool {
+func (p *AddRequest) Field1DeepEqual(src int64) bool {
 
 	if p.Id != src {
 		return false
@@ -450,9 +450,9 @@ func (p *AddResponse) Field1DeepEqual(src bool) bool {
 type QueryRequest struct {
 	QueryText  string `thrift:"queryText,1" json:"queryText"`
 	FilterText string `thrift:"filterText,2" json:"filterText"`
-	Page       int32  `thrift:"page,3" json:"page"`
-	Limit      int32  `thrift:"limit,4" json:"limit"`
-	Order      int32  `thrift:"order,5" json:"order"`
+	Page       int64  `thrift:"page,3" json:"page"`
+	Limit      int64  `thrift:"limit,4" json:"limit"`
+	Order      int64  `thrift:"order,5" json:"order"`
 }
 
 func NewQueryRequest() *QueryRequest {
@@ -467,15 +467,15 @@ func (p *QueryRequest) GetFilterText() (v string) {
 	return p.FilterText
 }
 
-func (p *QueryRequest) GetPage() (v int32) {
+func (p *QueryRequest) GetPage() (v int64) {
 	return p.Page
 }
 
-func (p *QueryRequest) GetLimit() (v int32) {
+func (p *QueryRequest) GetLimit() (v int64) {
 	return p.Limit
 }
 
-func (p *QueryRequest) GetOrder() (v int32) {
+func (p *QueryRequest) GetOrder() (v int64) {
 	return p.Order
 }
 func (p *QueryRequest) SetQueryText(val string) {
@@ -484,13 +484,13 @@ func (p *QueryRequest) SetQueryText(val string) {
 func (p *QueryRequest) SetFilterText(val string) {
 	p.FilterText = val
 }
-func (p *QueryRequest) SetPage(val int32) {
+func (p *QueryRequest) SetPage(val int64) {
 	p.Page = val
 }
-func (p *QueryRequest) SetLimit(val int32) {
+func (p *QueryRequest) SetLimit(val int64) {
 	p.Limit = val
 }
-func (p *QueryRequest) SetOrder(val int32) {
+func (p *QueryRequest) SetOrder(val int64) {
 	p.Order = val
 }
 
@@ -542,7 +542,7 @@ func (p *QueryRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 3:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -552,7 +552,7 @@ func (p *QueryRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 4:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -562,7 +562,7 @@ func (p *QueryRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 5:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -620,7 +620,7 @@ func (p *QueryRequest) ReadField2(iprot thrift.TProtocol) error {
 }
 
 func (p *QueryRequest) ReadField3(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Page = v
@@ -629,7 +629,7 @@ func (p *QueryRequest) ReadField3(iprot thrift.TProtocol) error {
 }
 
 func (p *QueryRequest) ReadField4(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Limit = v
@@ -638,7 +638,7 @@ func (p *QueryRequest) ReadField4(iprot thrift.TProtocol) error {
 }
 
 func (p *QueryRequest) ReadField5(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Order = v
@@ -726,10 +726,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryRequest) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("page", thrift.I32, 3); err != nil {
+	if err = oprot.WriteFieldBegin("page", thrift.I64, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Page); err != nil {
+	if err := oprot.WriteI64(p.Page); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -743,10 +743,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryRequest) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("limit", thrift.I32, 4); err != nil {
+	if err = oprot.WriteFieldBegin("limit", thrift.I64, 4); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Limit); err != nil {
+	if err := oprot.WriteI64(p.Limit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -760,10 +760,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryRequest) writeField5(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("order", thrift.I32, 5); err != nil {
+	if err = oprot.WriteFieldBegin("order", thrift.I64, 5); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Order); err != nil {
+	if err := oprot.WriteI64(p.Order); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -821,21 +821,21 @@ func (p *QueryRequest) Field2DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *QueryRequest) Field3DeepEqual(src int32) bool {
+func (p *QueryRequest) Field3DeepEqual(src int64) bool {
 
 	if p.Page != src {
 		return false
 	}
 	return true
 }
-func (p *QueryRequest) Field4DeepEqual(src int32) bool {
+func (p *QueryRequest) Field4DeepEqual(src int64) bool {
 
 	if p.Limit != src {
 		return false
 	}
 	return true
 }
-func (p *QueryRequest) Field5DeepEqual(src int32) bool {
+func (p *QueryRequest) Field5DeepEqual(src int64) bool {
 
 	if p.Order != src {
 		return false
@@ -845,10 +845,10 @@ func (p *QueryRequest) Field5DeepEqual(src int32) bool {
 
 type QueryResponse struct {
 	Time      float64       `thrift:"time,1" json:"time"`
-	Total     int32         `thrift:"total,2" json:"total"`
-	Pagecount int32         `thrift:"pagecount,3" json:"pagecount"`
-	Page      int32         `thrift:"page,4" json:"page"`
-	Limit     int32         `thrift:"limit,5" json:"limit"`
+	Total     int64         `thrift:"total,2" json:"total"`
+	Pagecount int64         `thrift:"pagecount,3" json:"pagecount"`
+	Page      int64         `thrift:"page,4" json:"page"`
+	Limit     int64         `thrift:"limit,5" json:"limit"`
 	Contents  []*AddRequest `thrift:"contents,6" json:"contents"`
 }
 
@@ -860,19 +860,19 @@ func (p *QueryResponse) GetTime() (v float64) {
 	return p.Time
 }
 
-func (p *QueryResponse) GetTotal() (v int32) {
+func (p *QueryResponse) GetTotal() (v int64) {
 	return p.Total
 }
 
-func (p *QueryResponse) GetPagecount() (v int32) {
+func (p *QueryResponse) GetPagecount() (v int64) {
 	return p.Pagecount
 }
 
-func (p *QueryResponse) GetPage() (v int32) {
+func (p *QueryResponse) GetPage() (v int64) {
 	return p.Page
 }
 
-func (p *QueryResponse) GetLimit() (v int32) {
+func (p *QueryResponse) GetLimit() (v int64) {
 	return p.Limit
 }
 
@@ -882,16 +882,16 @@ func (p *QueryResponse) GetContents() (v []*AddRequest) {
 func (p *QueryResponse) SetTime(val float64) {
 	p.Time = val
 }
-func (p *QueryResponse) SetTotal(val int32) {
+func (p *QueryResponse) SetTotal(val int64) {
 	p.Total = val
 }
-func (p *QueryResponse) SetPagecount(val int32) {
+func (p *QueryResponse) SetPagecount(val int64) {
 	p.Pagecount = val
 }
-func (p *QueryResponse) SetPage(val int32) {
+func (p *QueryResponse) SetPage(val int64) {
 	p.Page = val
 }
-func (p *QueryResponse) SetLimit(val int32) {
+func (p *QueryResponse) SetLimit(val int64) {
 	p.Limit = val
 }
 func (p *QueryResponse) SetContents(val []*AddRequest) {
@@ -937,7 +937,7 @@ func (p *QueryResponse) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -947,7 +947,7 @@ func (p *QueryResponse) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 3:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -957,7 +957,7 @@ func (p *QueryResponse) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 4:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -967,7 +967,7 @@ func (p *QueryResponse) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 5:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1026,7 +1026,7 @@ func (p *QueryResponse) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *QueryResponse) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Total = v
@@ -1035,7 +1035,7 @@ func (p *QueryResponse) ReadField2(iprot thrift.TProtocol) error {
 }
 
 func (p *QueryResponse) ReadField3(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Pagecount = v
@@ -1044,7 +1044,7 @@ func (p *QueryResponse) ReadField3(iprot thrift.TProtocol) error {
 }
 
 func (p *QueryResponse) ReadField4(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Page = v
@@ -1053,7 +1053,7 @@ func (p *QueryResponse) ReadField4(iprot thrift.TProtocol) error {
 }
 
 func (p *QueryResponse) ReadField5(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Limit = v
@@ -1148,10 +1148,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryResponse) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("total", thrift.I32, 2); err != nil {
+	if err = oprot.WriteFieldBegin("total", thrift.I64, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Total); err != nil {
+	if err := oprot.WriteI64(p.Total); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1165,10 +1165,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryResponse) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("pagecount", thrift.I32, 3); err != nil {
+	if err = oprot.WriteFieldBegin("pagecount", thrift.I64, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Pagecount); err != nil {
+	if err := oprot.WriteI64(p.Pagecount); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1182,10 +1182,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryResponse) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("page", thrift.I32, 4); err != nil {
+	if err = oprot.WriteFieldBegin("page", thrift.I64, 4); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Page); err != nil {
+	if err := oprot.WriteI64(p.Page); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1199,10 +1199,10 @@ WriteFieldEndError:
 }
 
 func (p *QueryResponse) writeField5(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("limit", thrift.I32, 5); err != nil {
+	if err = oprot.WriteFieldBegin("limit", thrift.I64, 5); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Limit); err != nil {
+	if err := oprot.WriteI64(p.Limit); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1281,28 +1281,28 @@ func (p *QueryResponse) Field1DeepEqual(src float64) bool {
 	}
 	return true
 }
-func (p *QueryResponse) Field2DeepEqual(src int32) bool {
+func (p *QueryResponse) Field2DeepEqual(src int64) bool {
 
 	if p.Total != src {
 		return false
 	}
 	return true
 }
-func (p *QueryResponse) Field3DeepEqual(src int32) bool {
+func (p *QueryResponse) Field3DeepEqual(src int64) bool {
 
 	if p.Pagecount != src {
 		return false
 	}
 	return true
 }
-func (p *QueryResponse) Field4DeepEqual(src int32) bool {
+func (p *QueryResponse) Field4DeepEqual(src int64) bool {
 
 	if p.Page != src {
 		return false
 	}
 	return true
 }
-func (p *QueryResponse) Field5DeepEqual(src int32) bool {
+func (p *QueryResponse) Field5DeepEqual(src int64) bool {
 
 	if p.Limit != src {
 		return false
@@ -1831,17 +1831,17 @@ func (p *FindIDResponse) Field1DeepEqual(src bool) bool {
 }
 
 type FindIDRequest struct {
-	Id int32 `thrift:"id,1" json:"id"`
+	Id int64 `thrift:"id,1" json:"id"`
 }
 
 func NewFindIDRequest() *FindIDRequest {
 	return &FindIDRequest{}
 }
 
-func (p *FindIDRequest) GetId() (v int32) {
+func (p *FindIDRequest) GetId() (v int64) {
 	return p.Id
 }
-func (p *FindIDRequest) SetId(val int32) {
+func (p *FindIDRequest) SetId(val int64) {
 	p.Id = val
 }
 
@@ -1869,7 +1869,7 @@ func (p *FindIDRequest) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1909,7 +1909,7 @@ ReadStructEndError:
 }
 
 func (p *FindIDRequest) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Id = v
@@ -1947,10 +1947,10 @@ WriteStructEndError:
 }
 
 func (p *FindIDRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("id", thrift.I32, 1); err != nil {
+	if err = oprot.WriteFieldBegin("id", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Id); err != nil {
+	if err := oprot.WriteI64(p.Id); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1982,7 +1982,7 @@ func (p *FindIDRequest) DeepEqual(ano *FindIDRequest) bool {
 	return true
 }
 
-func (p *FindIDRequest) Field1DeepEqual(src int32) bool {
+func (p *FindIDRequest) Field1DeepEqual(src int64) bool {
 
 	if p.Id != src {
 		return false
@@ -1991,17 +1991,17 @@ func (p *FindIDRequest) Field1DeepEqual(src int32) bool {
 }
 
 type QueryIDNumberResponse struct {
-	Number int32 `thrift:"number,1" json:"number"`
+	Number int64 `thrift:"number,1" json:"number"`
 }
 
 func NewQueryIDNumberResponse() *QueryIDNumberResponse {
 	return &QueryIDNumberResponse{}
 }
 
-func (p *QueryIDNumberResponse) GetNumber() (v int32) {
+func (p *QueryIDNumberResponse) GetNumber() (v int64) {
 	return p.Number
 }
-func (p *QueryIDNumberResponse) SetNumber(val int32) {
+func (p *QueryIDNumberResponse) SetNumber(val int64) {
 	p.Number = val
 }
 
@@ -2029,7 +2029,7 @@ func (p *QueryIDNumberResponse) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -2069,7 +2069,7 @@ ReadStructEndError:
 }
 
 func (p *QueryIDNumberResponse) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI32(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.Number = v
@@ -2107,10 +2107,10 @@ WriteStructEndError:
 }
 
 func (p *QueryIDNumberResponse) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("number", thrift.I32, 1); err != nil {
+	if err = oprot.WriteFieldBegin("number", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Number); err != nil {
+	if err := oprot.WriteI64(p.Number); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -2142,7 +2142,7 @@ func (p *QueryIDNumberResponse) DeepEqual(ano *QueryIDNumberResponse) bool {
 	return true
 }
 
-func (p *QueryIDNumberResponse) Field1DeepEqual(src int32) bool {
+func (p *QueryIDNumberResponse) Field1DeepEqual(src int64) bool {
 
 	if p.Number != src {
 		return false
