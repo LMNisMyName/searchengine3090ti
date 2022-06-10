@@ -22,11 +22,12 @@ func MGetCollection(c *gin.Context) {
 	names, collts, err := rpc.MGetCollection(c, req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success,
+			map[string]interface{}{
+				constants.Name:    names,
+				constants.ColltID: collts,
+			},
+		)
 	}
-	SendResponse(c, errno.Success,
-		map[string]interface{}{
-			constants.Name:    names,
-			constants.ColltID: collts,
-		},
-	)
 }

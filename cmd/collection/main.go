@@ -2,7 +2,7 @@ package main
 
 import (
 	"net"
-	"searchengine3090ti/cmd/user/dal"
+	"searchengine3090ti/cmd/collection/dal"
 	collectionModel "searchengine3090ti/kitex_gen/collectionModel/collectionservice"
 	"searchengine3090ti/pkg/constants"
 	"searchengine3090ti/pkg/middleware"
@@ -36,6 +36,7 @@ func main() {
 		server.WithMiddleware(middleware.ServerMiddleware),
 		server.WithServiceAddr(addr),
 		server.WithLimit(&limit.Option{MaxQPS: 100}),
+		server.WithMuxTransport(),
 		server.WithRegistry(r),
 	)
 
