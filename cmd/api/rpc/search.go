@@ -67,10 +67,10 @@ func RelatedSearch(ctx context.Context, req *searchapi.RelatedQueryRequest) ([]s
 }
 
 // FindID check a record if exists by ID
-func FindID(ctx context.Context, req *searchapi.FindIDRequest) (bool, error) {
+func FindID(ctx context.Context, req *searchapi.FindIDRequest) ([]*searchapi.AddRequest, error) {
 	resp, err := SearchClient.FindID(ctx, req)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
-	return resp.Found, err
+	return resp.Entries, err
 }

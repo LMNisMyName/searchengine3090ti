@@ -30,7 +30,7 @@ func SetName(c *gin.Context) {
 	setNameVar.NewName = newname
 
 	claim := jwt.ExtractClaims(c)
-	UserId := claim[constants.IdentityKey].(int64)
+	UserId := int64(claim[constants.IdentityKey].(float64))
 	setNameVar.UserID = UserId
 
 	req := &collectionModel.SetNameRequest{

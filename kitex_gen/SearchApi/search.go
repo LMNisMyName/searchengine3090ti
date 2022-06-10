@@ -1671,22 +1671,22 @@ func (p *RelatedQueryResponse) Field1DeepEqual(src []string) bool {
 }
 
 type FindIDResponse struct {
-	Found bool `thrift:"found,1" json:"found"`
+	Entries []*AddRequest `thrift:"entries,1" json:"entries"`
 }
 
 func NewFindIDResponse() *FindIDResponse {
 	return &FindIDResponse{}
 }
 
-func (p *FindIDResponse) GetFound() (v bool) {
-	return p.Found
+func (p *FindIDResponse) GetEntries() (v []*AddRequest) {
+	return p.Entries
 }
-func (p *FindIDResponse) SetFound(val bool) {
-	p.Found = val
+func (p *FindIDResponse) SetEntries(val []*AddRequest) {
+	p.Entries = val
 }
 
 var fieldIDToName_FindIDResponse = map[int16]string{
-	1: "found",
+	1: "entries",
 }
 
 func (p *FindIDResponse) Read(iprot thrift.TProtocol) (err error) {
@@ -1709,7 +1709,7 @@ func (p *FindIDResponse) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.BOOL {
+			if fieldTypeId == thrift.LIST {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1749,10 +1749,21 @@ ReadStructEndError:
 }
 
 func (p *FindIDResponse) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadBool(); err != nil {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
 		return err
-	} else {
-		p.Found = v
+	}
+	p.Entries = make([]*AddRequest, 0, size)
+	for i := 0; i < size; i++ {
+		_elem := NewAddRequest()
+		if err := _elem.Read(iprot); err != nil {
+			return err
+		}
+
+		p.Entries = append(p.Entries, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
 	}
 	return nil
 }
@@ -1787,10 +1798,18 @@ WriteStructEndError:
 }
 
 func (p *FindIDResponse) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("found", thrift.BOOL, 1); err != nil {
+	if err = oprot.WriteFieldBegin("entries", thrift.LIST, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteBool(p.Found); err != nil {
+	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Entries)); err != nil {
+		return err
+	}
+	for _, v := range p.Entries {
+		if err := v.Write(oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1816,37 +1835,43 @@ func (p *FindIDResponse) DeepEqual(ano *FindIDResponse) bool {
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.Found) {
+	if !p.Field1DeepEqual(ano.Entries) {
 		return false
 	}
 	return true
 }
 
-func (p *FindIDResponse) Field1DeepEqual(src bool) bool {
+func (p *FindIDResponse) Field1DeepEqual(src []*AddRequest) bool {
 
-	if p.Found != src {
+	if len(p.Entries) != len(src) {
 		return false
+	}
+	for i, v := range p.Entries {
+		_src := src[i]
+		if !v.DeepEqual(_src) {
+			return false
+		}
 	}
 	return true
 }
 
 type FindIDRequest struct {
-	Id int64 `thrift:"id,1" json:"id"`
+	Ids []int64 `thrift:"ids,1" json:"ids"`
 }
 
 func NewFindIDRequest() *FindIDRequest {
 	return &FindIDRequest{}
 }
 
-func (p *FindIDRequest) GetId() (v int64) {
-	return p.Id
+func (p *FindIDRequest) GetIds() (v []int64) {
+	return p.Ids
 }
-func (p *FindIDRequest) SetId(val int64) {
-	p.Id = val
+func (p *FindIDRequest) SetIds(val []int64) {
+	p.Ids = val
 }
 
 var fieldIDToName_FindIDRequest = map[int16]string{
-	1: "id",
+	1: "ids",
 }
 
 func (p *FindIDRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -1869,7 +1894,7 @@ func (p *FindIDRequest) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.LIST {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1909,10 +1934,23 @@ ReadStructEndError:
 }
 
 func (p *FindIDRequest) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
 		return err
-	} else {
-		p.Id = v
+	}
+	p.Ids = make([]int64, 0, size)
+	for i := 0; i < size; i++ {
+		var _elem int64
+		if v, err := iprot.ReadI64(); err != nil {
+			return err
+		} else {
+			_elem = v
+		}
+
+		p.Ids = append(p.Ids, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
 	}
 	return nil
 }
@@ -1947,10 +1985,18 @@ WriteStructEndError:
 }
 
 func (p *FindIDRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("id", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("ids", thrift.LIST, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Id); err != nil {
+	if err := oprot.WriteListBegin(thrift.I64, len(p.Ids)); err != nil {
+		return err
+	}
+	for _, v := range p.Ids {
+		if err := oprot.WriteI64(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1976,16 +2022,22 @@ func (p *FindIDRequest) DeepEqual(ano *FindIDRequest) bool {
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.Id) {
+	if !p.Field1DeepEqual(ano.Ids) {
 		return false
 	}
 	return true
 }
 
-func (p *FindIDRequest) Field1DeepEqual(src int64) bool {
+func (p *FindIDRequest) Field1DeepEqual(src []int64) bool {
 
-	if p.Id != src {
+	if len(p.Ids) != len(src) {
 		return false
+	}
+	for i, v := range p.Ids {
+		_src := src[i]
+		if v != _src {
+			return false
+		}
 	}
 	return true
 }

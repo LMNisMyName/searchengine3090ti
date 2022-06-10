@@ -34,7 +34,7 @@ func DeleteEntry(c *gin.Context) {
 	deleteEntryVar.Entry = int64(tmpI)
 
 	claim := jwt.ExtractClaims(c)
-	userId := claim[constants.IdentityKey].(int64)
+	userId := int64(claim[constants.IdentityKey].(float64))
 	deleteEntryVar.UserID = userId
 
 	req := &collectionModel.DeleteEntryRequest{

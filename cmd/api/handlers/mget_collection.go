@@ -13,7 +13,7 @@ import (
 func MGetCollection(c *gin.Context) {
 	var mgetColltVar MGetColltParam
 	claim := jwt.ExtractClaims(c)
-	UserId := claim[constants.IdentityKey].(int64)
+	UserId := int64(claim[constants.IdentityKey].(float64))
 	mgetColltVar.UserID = UserId
 
 	req := &collectionModel.MGetColltResquest{

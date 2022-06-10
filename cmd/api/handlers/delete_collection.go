@@ -24,7 +24,7 @@ func DeleteCollection(c *gin.Context) {
 	deleteColltVar.ColltID = int64(tmpI)
 
 	claim := jwt.ExtractClaims(c)
-	UserId := claim[constants.IdentityKey].(int64)
+	UserId := int64(claim[constants.IdentityKey].(float64))
 	deleteColltVar.UserID = UserId
 
 	req := &collectionModel.DeleteColltRequest{

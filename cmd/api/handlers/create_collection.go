@@ -20,8 +20,9 @@ func CreateCollection(c *gin.Context) {
 	createColltVar.Name = name
 
 	claim := jwt.ExtractClaims(c)
-	UserId := claim[constants.IdentityKey].(int64)
+	UserId := int64(claim[constants.IdentityKey].(float64))
 	createColltVar.UserID = UserId
+
 	req := &collectionModel.CreateColltRequest{
 		UserId: createColltVar.UserID,
 		Name:   createColltVar.Name,

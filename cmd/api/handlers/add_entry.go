@@ -35,18 +35,18 @@ func AddEntry(c *gin.Context) {
 	addEntryVar.NewEntry = int64(tmpI)
 
 	claim := jwt.ExtractClaims(c)
-	userId := claim[constants.IdentityKey].(int64)
+	userId := int64(claim[constants.IdentityKey].(float64))
 	addEntryVar.UserID = userId
 
 	//check newEntry if exits
 	reqC := &searchapi.FindIDRequest{
-		Id: addEntryVar.NewEntry,
+		Ids: []int64{addEntryVar.NewEntry},
 	}
 	isExist, err := rpc.FindID(c, reqC)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
 	}
-	if !isExist {
+	if len(isExist) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
 	}
 

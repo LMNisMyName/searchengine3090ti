@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"searchengine3090ti/cmd/api/rpc"
+	searchapi "searchengine3090ti/kitex_gen/SearchApi"
 	"searchengine3090ti/kitex_gen/collectionModel"
 	"searchengine3090ti/pkg/constants"
 	"searchengine3090ti/pkg/errno"
@@ -25,7 +26,7 @@ func GetCollection(c *gin.Context) {
 	getColltVar.ColltID = int64(tmpI)
 
 	claim := jwt.ExtractClaims(c)
-	UserId := claim[constants.IdentityKey].(int64)
+	UserId := int64(claim[constants.IdentityKey].(float64))
 	getColltVar.UserID = UserId
 
 	req := &collectionModel.GetColltRequest{
@@ -36,10 +37,20 @@ func GetCollection(c *gin.Context) {
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
 	}
+
+	// rpc to get actuall entry title
+	reqF := &searchapi.FindIDRequest{
+		Ids: entry,
+	}
+	actEntry, err := rpc.FindID(c, reqF)
+	if err != nil {
+		SendResponse(c, errno.ConvertErr(err), nil)
+	}
+
 	SendResponse(c, errno.Success,
 		map[string]interface{}{
 			constants.Name:  name,
-			constants.Entry: entry,
+			constants.Entry: actEntry,
 		},
 	)
 }
