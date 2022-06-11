@@ -16,6 +16,7 @@ func CreateCollection(c *gin.Context) {
 	name := c.PostForm("name")
 	if len(name) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
+		return
 	}
 	createColltVar.Name = name
 
@@ -30,6 +31,7 @@ func CreateCollection(c *gin.Context) {
 	err := rpc.CreateCollection(c, req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success, nil)
 	}
-	SendResponse(c, errno.Success, nil)
 }

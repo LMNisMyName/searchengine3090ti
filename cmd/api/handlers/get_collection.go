@@ -18,10 +18,12 @@ func GetCollection(c *gin.Context) {
 	colltID := c.Param("collt")
 	if len(colltID) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
+		return
 	}
 	tmpI, err := strconv.Atoi(colltID)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+		return
 	}
 	getColltVar.ColltID = int64(tmpI)
 
@@ -36,6 +38,7 @@ func GetCollection(c *gin.Context) {
 	name, entry, err := rpc.GetCollection(c, req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+		return
 	}
 
 	// rpc to get actuall entry title
@@ -45,12 +48,12 @@ func GetCollection(c *gin.Context) {
 	actEntry, err := rpc.FindID(c, reqF)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success,
+			map[string]interface{}{
+				constants.Name:  name,
+				constants.Entry: actEntry,
+			},
+		)
 	}
-
-	SendResponse(c, errno.Success,
-		map[string]interface{}{
-			constants.Name:  name,
-			constants.Entry: actEntry,
-		},
-	)
 }

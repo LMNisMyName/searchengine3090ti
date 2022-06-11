@@ -101,7 +101,7 @@ func DeleteEntry(ctx context.Context, UserID, ColltID int64, targetEntry int64) 
 
 //设置收藏夹名
 func SetName(ctx context.Context, UserID, ColltID int64, newName string) error {
-	if err := DB.WithContext(ctx).Where("user_id = ? AND id = ?", UserID, uint(ColltID)).Update("name", newName).Error; err != nil {
+	if err := DB.Model(&Collection{}).WithContext(ctx).Where("user_id = ? AND id = ?", UserID, uint(ColltID)).Update("name", newName).Error; err != nil {
 		return err
 	}
 	return nil

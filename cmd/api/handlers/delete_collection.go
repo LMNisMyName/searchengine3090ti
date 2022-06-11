@@ -16,10 +16,12 @@ func DeleteCollection(c *gin.Context) {
 	colltId := c.Param("collt")
 	if len(colltId) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
+		return
 	}
 	tmpI, err := strconv.Atoi(colltId)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+		return
 	}
 	deleteColltVar.ColltID = int64(tmpI)
 
@@ -34,6 +36,7 @@ func DeleteCollection(c *gin.Context) {
 	err = rpc.DeleteCollection(c, req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success, nil)
 	}
-	SendResponse(c, errno.Success, nil)
 }

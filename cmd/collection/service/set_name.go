@@ -23,10 +23,6 @@ func (s *SetNameService) SetName(req *collectionModel.SetNameRequest) error {
 	if len(collts) == 0 {
 		return errno.CollectionNotExitErr
 	}
-	collts, err = db.GetColletction(s.ctx, req.UserId, req.ColltId)
-	if err != nil {
-		return err
-	}
 	for _, collt := range collts {
 		if collt.Name == req.NewName {
 			return errno.CollectionAlreadyExistErr

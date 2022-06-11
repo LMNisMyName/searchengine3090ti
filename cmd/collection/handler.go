@@ -38,9 +38,11 @@ func (s *CollectionServiceImpl) GetCollection(ctx context.Context, req *collecti
 		resp.BaseResp = pack.BuildBaseResp(err)
 		return resp, nil
 	}
-	resp.BaseResp = pack.BuildBaseResp(errno.Success)
-	resp.Name = collts[0].Name
-	resp.Entry = collts[0].Entry
+	if collts != nil {
+		resp.BaseResp = pack.BuildBaseResp(errno.Success)
+		resp.Name = collts[0].Name
+		resp.Entry = collts[0].Entry
+	}
 	return resp, nil
 }
 
