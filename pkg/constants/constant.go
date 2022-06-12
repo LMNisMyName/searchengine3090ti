@@ -10,7 +10,7 @@ const (
 	certKeyPath = "KeyPath" //should be modify
 
 	//keys
-	SecretKey   = "addYourKeyHere" //Should be modify
+	SecretKey   = "123" //Should be modify
 	IdentityKey = "id"
 
 	/* json key

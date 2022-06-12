@@ -20,7 +20,6 @@ func Register(c *gin.Context) {
 		SendResponse(c, errno.ParamErr, nil)
 		return
 	}
-
 	err := rpc.CreateUser(context.Background(), &userModel.CreateUserRequest{
 		UserName: registerVar.UserName,
 		Password: registerVar.PassWord,

@@ -1,19 +1,16 @@
 # SearchEngine3090ti
 
-2022字节跳动青训营搜索引擎项目
 
-<br>
+## Introduction
+https://kpcbf4ul2l.feishu.cn/docx/doxcnh8E8ZdonIeLizsyJeQFmPA
 
-### Usage
-基本环境配置
+## Quick Start
+Environment:
 - go 1.18
 - Docker
 - kitex
-- protobuf(可选)
-
+- protobuf
 <br>
-
-命令行下
 > 1.设置基本依赖服务
 >> docker-compose up / sudo docker-compose up
 >>
@@ -27,7 +24,7 @@
 >>sh build.sh
 >>sh output/bootstrap.sh / sudo sh output/bootstrap.sh
 >>
->4.运行Collecyion 服务器服务
+>4.运行Collection 服务器服务
 >>cd cmd/collection
 >>sh build.sh
 >>sh output/bootstrap.sh / sudo sh output/bootstrap.sh
@@ -37,7 +34,6 @@
 >>chmod +x run.sh
 >>./run.sh
 >>
-
 <br>
 
 ### 内部开发指南
