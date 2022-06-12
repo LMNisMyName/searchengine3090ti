@@ -4,6 +4,9 @@
 ## Introduction
 https://kpcbf4ul2l.feishu.cn/docx/doxcnh8E8ZdonIeLizsyJeQFmPA
 
+## API Document
+https://www.apifox.cn/apidoc/shared-f5f40433-908c-44e8-9661-e5ed84988a59
+
 ## Quick Start
 Environment:
 - go 1.18
@@ -35,16 +38,3 @@ Environment:
 >>./run.sh
 >>
 <br>
-
-### 内部开发指南
-####收藏夹接口
-|  描述             |      URL           |     方法    |    传参      |      接收 |
-| -----------       | -----------        | ----------- | ----------- | ----------- |
-| 获取用户收藏夹列表 | /collection/       |        GET      |          |      {...,"name":[colltName1,colltName2...],"colltId":[colltId1,colltId2...]}      |
-| 获取收藏夹详情   | /collection/:collt        | GET | Query:?collt=id | {...,"name":colltName,"entry":[addRequest1,addRequest2...]} |
-| 创建收藏夹 | /collection/create | POST | POSTFORM:key=name,value=? | {...} |
-| 删除收藏夹 | /collection/delete:collt | GET | Query:?collt=id | {...} |
-| 添加搜索记录于指定收藏夹 | /collection/:collt/add | POST | Query:?collt=id ; POSTFORM:key=newentry,value=? | {...} |
-| 删除指定收藏夹中指定搜索记录 | /collection/:collt/delete| GET | Query:?collt=id POSTFROM:key=entry,value=? | {...} |
-| 设置指定收藏夹名字 | /collection/:collt/setname | POST |Query:?collt=id ; POSTFROM:key=newname,value=? | {...} |
-//TODO
