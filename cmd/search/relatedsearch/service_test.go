@@ -59,11 +59,11 @@ func TestSearchTopK(t *testing.T) {
 	relatedsearch.Add("上海交通大学g")
 	relatedsearch.Add("上海交通大学a")
 	relatedsearch.Add("北京大学")
-	ans := relatedsearch.SearchTopK("上海", 10)
+	ans := relatedsearch.SearchTopK("1", 10)
 	fmt.Println(ans)
 }
 
 func TestGetPinYinForMix(t *testing.T) {
-	s := "World 你好"
+	s := "1"
 	fmt.Println(relatedsearch.GetPinYinForMix(s))
 }

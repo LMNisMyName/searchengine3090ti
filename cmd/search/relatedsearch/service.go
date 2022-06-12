@@ -190,10 +190,17 @@ func SearchTopK(prefix string, k int) []string {
 		return 1
 	}))
 	prefixEn := GetPinYinForMix(prefix)
+	//查询的字符串为空
+	if len(prefixEn) == 0 {
+		return []string{}
+	}
 	SearchTopKInCurNode(pq, k, prefixEn, searchTrie.root)
 	SearchTopKInCurNode(pq, k, prefixEn, searchTrie.rootCh)
 	ans := make([]string, pq.Size())
 	index := pq.Size() - 1
+	if index < 0 {
+		return ans
+	}
 	for {
 		ans[index] = (pq.Pop()).(*TrieNode).text
 		index--
