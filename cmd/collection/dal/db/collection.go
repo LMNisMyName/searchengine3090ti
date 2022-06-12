@@ -2,18 +2,31 @@ package db
 
 import (
 	"context"
+	"database/sql/driver"
+	"encoding/json"
 	"errors"
 	"searchengine3090ti/pkg/constants"
 
 	"gorm.io/gorm"
 )
 
+type Entry []int64
+
+func (e *Entry) Scan(value interface{}) error {
+	byteValue, _ := value.([]byte)
+	return json.Unmarshal(byteValue, e)
+}
+
+func (e *Entry) Value() (driver.Value, error) {
+	return json.Marshal(e)
+}
+
 type Collection struct {
 	gorm.Model
 	UserID int64 `json:"user_id"`
 
-	Name    string  `json:"name"`
-	Entries []int64 `json:"entries"`
+	Name    string `json:"name"`
+	Entries Entry  `json:"entries"`
 }
 
 func (c *Collection) TableName() string {
@@ -88,7 +101,7 @@ func DeleteEntry(ctx context.Context, UserID, ColltID int64, targetEntry int64) 
 
 //设置收藏夹名
 func SetName(ctx context.Context, UserID, ColltID int64, newName string) error {
-	if err := DB.WithContext(ctx).Where("user_id = ? AND id = ?", UserID, uint(ColltID)).Update("name", newName).Error; err != nil {
+	if err := DB.Model(&Collection{}).WithContext(ctx).Where("user_id = ? AND id = ?", UserID, uint(ColltID)).Update("name", newName).Error; err != nil {
 		return err
 	}
 	return nil

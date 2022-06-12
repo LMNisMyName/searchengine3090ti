@@ -36,11 +36,11 @@ struct RelatedQueryResponse{
 }
 
 struct FindIDResponse{
-    1: bool found                   //是否找到
+    1: list<AddRequest> entries                 //是否找到
 }
 
 struct FindIDRequest{
-    1: i64  id                      //要查找的ID   
+    1: list<i64>  ids                      //要查找的ID   
 }
 
 struct QueryIDNumberResponse {

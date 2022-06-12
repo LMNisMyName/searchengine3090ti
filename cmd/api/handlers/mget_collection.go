@@ -13,7 +13,7 @@ import (
 func MGetCollection(c *gin.Context) {
 	var mgetColltVar MGetColltParam
 	claim := jwt.ExtractClaims(c)
-	UserId := claim[constants.IdentityKey].(int64)
+	UserId := int64(claim[constants.IdentityKey].(float64))
 	mgetColltVar.UserID = UserId
 
 	req := &collectionModel.MGetColltResquest{
@@ -22,11 +22,12 @@ func MGetCollection(c *gin.Context) {
 	names, collts, err := rpc.MGetCollection(c, req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success,
+			map[string]interface{}{
+				constants.Name:    names,
+				constants.ColltID: collts,
+			},
+		)
 	}
-	SendResponse(c, errno.Success,
-		map[string]interface{}{
-			constants.Name:    names,
-			constants.ColltID: collts,
-		},
-	)
 }

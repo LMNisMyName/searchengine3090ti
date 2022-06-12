@@ -152,12 +152,10 @@ func (s *SearchImpl) RelatedQuery(ctx context.Context, req *searchapi.RelatedQue
 //FindID implements the SearchImpl interface.
 func (s *SearchImpl) FindID(ctx context.Context, req *searchapi.FindIDRequest) (resp *searchapi.FindIDResponse, err error) {
 	// 调用数据库根据ID查询记录接口
-	ret, err := db.QueryRecord(context.Background(), []int64{req.Id})
+	ret, err := db.QueryRecord(context.Background(), req.Ids)
 	resp = new(searchapi.FindIDResponse)
-	if len(ret) == 0 {
-		resp.Found = false
-	} else {
-		resp.Found = true
+	for i := range ret {
+		resp.Entries = append(resp.Entries, &ret[i])
 	}
 	return
 }

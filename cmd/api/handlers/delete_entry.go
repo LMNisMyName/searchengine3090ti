@@ -16,25 +16,29 @@ func DeleteEntry(c *gin.Context) {
 	colltId := c.Param("collt")
 	if len(colltId) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
+		return
 	}
 	tmpI, err := strconv.Atoi(colltId)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+		return
 	}
 	deleteEntryVar.ColltID = int64(tmpI)
 
 	entry := c.PostForm("entry")
 	if len(entry) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
+		return
 	}
 	tmpI, err = strconv.Atoi(entry)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+		return
 	}
 	deleteEntryVar.Entry = int64(tmpI)
 
 	claim := jwt.ExtractClaims(c)
-	userId := claim[constants.IdentityKey].(int64)
+	userId := int64(claim[constants.IdentityKey].(float64))
 	deleteEntryVar.UserID = userId
 
 	req := &collectionModel.DeleteEntryRequest{
@@ -45,6 +49,8 @@ func DeleteEntry(c *gin.Context) {
 	err = rpc.DeleteEntry(c, req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success, nil)
 	}
-	SendResponse(c, errno.Success, nil)
+
 }

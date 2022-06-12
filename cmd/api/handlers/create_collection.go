@@ -16,12 +16,14 @@ func CreateCollection(c *gin.Context) {
 	name := c.PostForm("name")
 	if len(name) == 0 {
 		SendResponse(c, errno.ParamErr, nil)
+		return
 	}
 	createColltVar.Name = name
 
 	claim := jwt.ExtractClaims(c)
-	UserId := claim[constants.IdentityKey].(int64)
+	UserId := int64(claim[constants.IdentityKey].(float64))
 	createColltVar.UserID = UserId
+
 	req := &collectionModel.CreateColltRequest{
 		UserId: createColltVar.UserID,
 		Name:   createColltVar.Name,
@@ -29,6 +31,7 @@ func CreateCollection(c *gin.Context) {
 	err := rpc.CreateCollection(c, req)
 	if err != nil {
 		SendResponse(c, errno.ConvertErr(err), nil)
+	} else {
+		SendResponse(c, errno.Success, nil)
 	}
-	SendResponse(c, errno.Success, nil)
 }

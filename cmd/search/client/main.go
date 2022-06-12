@@ -36,9 +36,9 @@ func main() {
 	}
 	fmt.Println(respR)
 	//4. 查询ID
-	respG, err := client.FindID(context.Background(), &searchapi.FindIDRequest{Id: 1})
+	respG, err := client.FindID(context.Background(), &searchapi.FindIDRequest{Ids: []int64{1}})
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(respG.Found)
+	fmt.Println(respG.Entries)
 }
