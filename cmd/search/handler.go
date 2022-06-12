@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"os/exec"
 	"searchengine3090ti/cmd/search/dal/db"
 	"searchengine3090ti/cmd/search/relatedsearch"
 	"searchengine3090ti/cmd/search/tokenizer"
@@ -95,6 +96,220 @@ func (s *SearchImpl) Query(ctx context.Context, req *searchapi.QueryRequest) (re
 	}
 	//3. 根据分页请求在排好序的数组中确定一个窗口 [lIndex, rIndex)
 	resp = new(searchapi.QueryResponse)
+	resp.Page = req.Page
+	resp.Limit = req.Limit
+	resp.Pagecount = int64(math.Ceil((float64(v.Size()) / float64(req.Limit))))
+	resp.Contents = make([]*searchapi.AddRequest, 0)
+	lIndex := (req.Page - 1) * req.Limit
+	rIndex := req.Page * req.Limit
+	if rIndex > int64(v.Size()) {
+		rIndex = int64(v.Size())
+	}
+	if lIndex >= int64(v.Size()) {
+		//窗口超过数组上界
+		return
+	} else {
+		resp.Total = rIndex - lIndex
+		ids := make([]int64, resp.Total)
+		for i := lIndex; i < rIndex; i++ {
+			ids[i-lIndex] = v.At(int(i)).(int64)
+		}
+		//4. 调用数据库查询records服务
+		records, err := db.QueryRecord(ctx, ids)
+		fmt.Println(ids)
+		if err == nil {
+			for _, record := range records {
+				recordNew := record
+				resp.Contents = append(resp.Contents, &recordNew)
+			}
+		}
+	}
+	return
+}
+
+// Wd2imgQuery implements the SearchImpl interface.
+func (s *SearchImpl) Wd2imgquery(ctx context.Context, req *searchapi.Wd2imgQueryRequest) (resp *searchapi.Wd2imgQueryResponse, err error) {
+	startTime := time.Now()
+	defer func() {
+		endTime := time.Now()
+		resp.Time = float64(endTime.Local().UnixMilli()) - float64(startTime.Local().UnixMilli())
+	}()
+	//0.将当前查询添加到字典树当中
+	relatedsearch.Add(req.QueryText)
+
+	idMap := make(map[int64]float64) //记录每个ID及其出现的次数
+	//1.调用两次数据库的查询id服务，分别查询要搜索的id和要屏蔽的id，建立id与其出现次数的映射
+	queryKeywords := tokenizer.MyTokenizer.Cut(req.QueryText)
+	filterKeyWords := tokenizer.MyTokenizer.Cut(req.FilterText)
+	//使用Go协程加速idMap的更新和删除
+	//使用锁用来保护idMap，使用waitGroup用来同步协程退出
+	var mux sync.Mutex
+	wg := sync.WaitGroup{}
+	wg.Add(len(queryKeywords))
+	for _, qword := range queryKeywords {
+		go func(qword string) {
+			if ids, find := db.Query(ctx, qword); find {
+				for _, id := range ids {
+					var weight float64
+					weight, err = getWeight(qword)
+					mux.Lock()
+					idMap[id] += weight
+					mux.Unlock()
+				}
+			}
+			wg.Done()
+		}(qword)
+	}
+	wg.Wait()
+	wg.Add(len(filterKeyWords))
+	for _, fword := range filterKeyWords {
+		go func(fword string) {
+			if ids, find := db.Query(ctx, fword); find {
+				for _, id := range ids {
+					mux.Lock()
+					delete(idMap, id)
+					mux.Unlock()
+				}
+			}
+			wg.Done()
+		}(fword)
+	}
+	wg.Wait()
+	//2. 对id差集按照关联度从大到小进行排序
+	v := vector.New()
+	for id := range idMap {
+		v.PushBack(id)
+	}
+	// 排序方式
+	// req.Order == 0 表示按照关联度从高到低排序
+	if req.Order == 0 {
+		sort.Sort(v.Begin(), v.End(), func(l, r any) int {
+			if l == r {
+				return 0
+			}
+			switch l.(type) {
+			case int64:
+				if idMap[l.(int64)] > idMap[r.(int64)] {
+					return 1
+				} else {
+					return -1
+				}
+			}
+			return 1
+		})
+	}
+	//3. 根据分页请求在排好序的数组中确定一个窗口 [lIndex, rIndex)
+	resp = new(searchapi.Wd2imgQueryResponse)
+	resp.Page = req.Page
+	resp.Limit = req.Limit
+	resp.Pagecount = int64(math.Ceil((float64(v.Size()) / float64(req.Limit))))
+	resp.Contents = make([]*searchapi.AddRequest, 0)
+	lIndex := (req.Page - 1) * req.Limit
+	rIndex := req.Page * req.Limit
+	if rIndex > int64(v.Size()) {
+		rIndex = int64(v.Size())
+	}
+	if lIndex >= int64(v.Size()) {
+		//窗口超过数组上界
+		return
+	} else {
+		resp.Total = rIndex - lIndex
+		ids := make([]int64, resp.Total)
+		for i := lIndex; i < rIndex; i++ {
+			ids[i-lIndex] = v.At(int(i)).(int64)
+		}
+		//4. 调用数据库查询records服务
+		records, err := db.QueryImagesRecord(ctx, ids)
+		fmt.Println(ids)
+		if err == nil {
+			for _, record := range records {
+				recordNew := record
+				resp.Contents = append(resp.Contents, &recordNew)
+			}
+		}
+	}
+	return
+}
+
+// imgQuery implements the SearchImpl interface.
+func (s *SearchImpl) Imgquery(ctx context.Context, req *searchapi.ImgQueryRequest) (resp *searchapi.ImgQueryResponse, err error) {
+	startTime := time.Now()
+	defer func() {
+		endTime := time.Now()
+		resp.Time = float64(endTime.Local().UnixMilli()) - float64(startTime.Local().UnixMilli())
+	}()
+	//0.将当前查询添加到字典树当中
+	cmd := exec.Command("python3", "../../pyscripts/img2text.py", req.QueryText)
+	output, err := cmd.CombinedOutput()
+
+	println(output)
+	if err != nil {
+		fmt.Println(fmt.Sprint(err) + ": " + string(output))
+	}
+	relatedsearch.Add(string(output))
+	idMap := make(map[int64]float64) //记录每个ID及其出现的次数
+	//1.调用两次数据库的查询id服务，分别查询要搜索的id和要屏蔽的id，建立id与其出现次数的映射
+	queryKeywords := tokenizer.MyTokenizer.Cut(string(output))
+	filterKeyWords := tokenizer.MyTokenizer.Cut(req.FilterText)
+	//使用Go协程加速idMap的更新和删除
+	//使用锁用来保护idMap，使用waitGroup用来同步协程退出
+	var mux sync.Mutex
+	wg := sync.WaitGroup{}
+	wg.Add(len(queryKeywords))
+	for _, qword := range queryKeywords {
+		go func(qword string) {
+			if ids, find := db.Query(ctx, qword); find {
+				for _, id := range ids {
+					var weight float64
+					weight, err = getWeight(qword)
+					mux.Lock()
+					idMap[id] += weight
+					mux.Unlock()
+				}
+			}
+			wg.Done()
+		}(qword)
+	}
+	wg.Wait()
+	wg.Add(len(filterKeyWords))
+	for _, fword := range filterKeyWords {
+		go func(fword string) {
+			if ids, find := db.Query(ctx, fword); find {
+				for _, id := range ids {
+					mux.Lock()
+					delete(idMap, id)
+					mux.Unlock()
+				}
+			}
+			wg.Done()
+		}(fword)
+	}
+	wg.Wait()
+	//2. 对id差集按照关联度从大到小进行排序
+	v := vector.New()
+	for id := range idMap {
+		v.PushBack(id)
+	}
+	// 排序方式
+	// req.Order == 0 表示按照关联度从高到低排序
+	if req.Order == 0 {
+		sort.Sort(v.Begin(), v.End(), func(l, r any) int {
+			if l == r {
+				return 0
+			}
+			switch l.(type) {
+			case int64:
+				if idMap[l.(int64)] > idMap[r.(int64)] {
+					return 1
+				} else {
+					return -1
+				}
+			}
+			return 1
+		})
+	}
+	//3. 根据分页请求在排好序的数组中确定一个窗口 [lIndex, rIndex)
+	resp = new(searchapi.ImgQueryResponse)
 	resp.Page = req.Page
 	resp.Limit = req.Limit
 	resp.Pagecount = int64(math.Ceil((float64(v.Size()) / float64(req.Limit))))

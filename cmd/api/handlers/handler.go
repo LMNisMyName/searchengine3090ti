@@ -32,6 +32,20 @@ type QueryParam struct {
 	Limit      int64  `json:"limit"`      //每页显示的请求数目
 	Order      int64  `json:"order"`      //排序方式
 }
+type imgQueryParam struct {
+	QueryText  string `json:"querytext"`  //用户在搜索框中输入的要查询的关键词
+	FilterText string `json:"filtertext"` //用户请求过滤的关键词
+	Page       int64  `json:"page"`       //用户请求的页码
+	Limit      int64  `json:"limit"`      //每页显示的请求数目
+	Order      int64  `json:"order"`      //排序方式
+}
+type wd2imgQueryParam struct {
+	QueryText  string `json:"querytext"`  //用户在搜索框中输入的要查询的关键词
+	FilterText string `json:"filtertext"` //用户请求过滤的关键词
+	Page       int64  `json:"page"`       //用户请求的页码
+	Limit      int64  `json:"limit"`      //每页显示的请求数目
+	Order      int64  `json:"order"`      //排序方式
+}
 
 //添加索引请求
 type AddParam struct {

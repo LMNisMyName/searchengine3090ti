@@ -26,7 +26,38 @@ struct QueryResponse {
   5: i64    limit       //每页展示的数目  
   6: list<AddRequest>      contents //查询到的内容
 }
+struct imgQueryRequest {
+  1: string queryText   //用户在搜索框中输入的要查询的关键词
+  2: string filterText  //用户请求过滤的关键词
+  3: i64    page        //用户请求的页码
+  4: i64    limit       //每页显示的请求数目
+  5: i64    order       //排序方式
+}
 
+struct imgQueryResponse {
+  1: double time        //查询所需时间
+  2: i64    total       //查询到的条目总数
+  3: i64    pagecount   //查询到的页数
+  4: i64    page        //当前页码
+  5: i64    limit       //每页展示的数目
+  6: list<AddRequest>      contents //查询到的内容
+}
+struct wd2imgQueryRequest {
+  1: string queryText   //用户在搜索框中输入的要查询的关键词
+  2: string filterText  //用户请求过滤的关键词
+  3: i64    page        //用户请求的页码
+  4: i64    limit       //每页显示的请求数目
+  5: i64    order       //排序方式
+}
+
+struct wd2imgQueryResponse {
+  1: double time        //查询所需时间
+  2: i64    total       //查询到的条目总数
+  3: i64    pagecount   //查询到的页数
+  4: i64    page        //当前页码
+  5: i64    limit       //每页展示的数目
+  6: list<AddRequest>      contents //查询到的内容
+}
 struct RelatedQueryRequest{
     1: string queryText             //用户在搜索框中输入的要查询的关键词
 }
@@ -62,4 +93,8 @@ service Search {
     FindIDResponse  findID(1: FindIDRequest req) 
     //查询当前记录数目
     QueryIDNumberResponse queryIDNumber(1 : QueryIDNumberRequest req)
+    //提供以图搜图查询服务
+    imgQueryResponse imgquery(1: imgQueryRequest req)
+    //提供文字搜图查询服务
+    wd2imgQueryResponse wd2imgquery(1: wd2imgQueryRequest req)
 }

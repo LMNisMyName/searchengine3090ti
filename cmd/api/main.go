@@ -85,6 +85,8 @@ func main() {
 	search1 := r.Group("/search")
 	search1.GET("/add", handlers.Add)
 	search1.POST("/query", handlers.Query)
+	search1.POST("/imgquery", handlers.ImgQuery)
+	search1.POST("/wd2imgquery", handlers.Wd2ImgQuery)
 	search1.GET("/relatedsearch", handlers.RelatedSearch)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {

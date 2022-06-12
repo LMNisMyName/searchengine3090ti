@@ -46,3 +46,11 @@ func TestQueryKeyWords(t *testing.T) {
 	fmt.Println(find)
 	// assert.Equal(t, true, find)
 }
+
+//通过关键词查询图片id
+func TestQueryImagesRecord(t *testing.T) {
+	ids, _ := db.Query(context.Background(), "extra")
+	records, _ := db.QueryImagesRecord(context.Background(), ids)
+	fmt.Println(ids)
+	fmt.Println(records)
+}

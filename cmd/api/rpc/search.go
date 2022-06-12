@@ -25,7 +25,7 @@ func initSearchRpc() {
 		constants.SearchServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithMuxConnection(1),
-		client.WithRPCTimeout(3*time.Second),
+		client.WithRPCTimeout(30*time.Second),
 		client.WithConnectTimeout(50*time.Millisecond),
 		client.WithFailureRetry(retry.NewFailurePolicy()),
 		client.WithResolver(r),
@@ -73,4 +73,18 @@ func FindID(ctx context.Context, req *searchapi.FindIDRequest) ([]*searchapi.Add
 		return nil, err
 	}
 	return resp.Entries, err
+}
+func ImgQuery(ctx context.Context, req *searchapi.ImgQueryRequest) (float64, int64, int64, int64, int64, []*searchapi.AddRequest, error) {
+	resp, err := SearchClient.Imgquery(ctx, req)
+	if err != nil {
+		return 0, 0, 0, 0, 0, nil, err
+	}
+	return resp.Time, resp.Total, resp.Pagecount, resp.Page, resp.Limit, resp.Contents, nil
+}
+func Wd2imgQuery(ctx context.Context, req *searchapi.Wd2imgQueryRequest) (float64, int64, int64, int64, int64, []*searchapi.AddRequest, error) {
+	resp, err := SearchClient.Wd2imgquery(ctx, req)
+	if err != nil {
+		return 0, 0, 0, 0, 0, nil, err
+	}
+	return resp.Time, resp.Total, resp.Pagecount, resp.Page, resp.Limit, resp.Contents, nil
 }

@@ -16,6 +16,8 @@ type Client interface {
 	RelatedQuery(ctx context.Context, req *searchapi.RelatedQueryRequest, callOptions ...callopt.Option) (r *searchapi.RelatedQueryResponse, err error)
 	FindID(ctx context.Context, req *searchapi.FindIDRequest, callOptions ...callopt.Option) (r *searchapi.FindIDResponse, err error)
 	QueryIDNumber(ctx context.Context, req *searchapi.QueryIDNumberRequest, callOptions ...callopt.Option) (r *searchapi.QueryIDNumberResponse, err error)
+	Imgquery(ctx context.Context, req *searchapi.ImgQueryRequest, callOptions ...callopt.Option) (r *searchapi.ImgQueryResponse, err error)
+	Wd2imgquery(ctx context.Context, req *searchapi.Wd2imgQueryRequest, callOptions ...callopt.Option) (r *searchapi.Wd2imgQueryResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -70,4 +72,14 @@ func (p *kSearchClient) FindID(ctx context.Context, req *searchapi.FindIDRequest
 func (p *kSearchClient) QueryIDNumber(ctx context.Context, req *searchapi.QueryIDNumberRequest, callOptions ...callopt.Option) (r *searchapi.QueryIDNumberResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.QueryIDNumber(ctx, req)
+}
+
+func (p *kSearchClient) Imgquery(ctx context.Context, req *searchapi.ImgQueryRequest, callOptions ...callopt.Option) (r *searchapi.ImgQueryResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Imgquery(ctx, req)
+}
+
+func (p *kSearchClient) Wd2imgquery(ctx context.Context, req *searchapi.Wd2imgQueryRequest, callOptions ...callopt.Option) (r *searchapi.Wd2imgQueryResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Wd2imgquery(ctx, req)
 }

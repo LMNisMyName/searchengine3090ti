@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	searchapi "searchengine3090ti/kitex_gen/SearchApi"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -133,4 +134,24 @@ func QueryRecordsNumber(ctx context.Context) (ans int64, err error) {
 		ans = int64(len(records))
 	}
 	return
+}
+
+//通过索引id数组查询索引内容为图片(Id, Text, Url)的数组
+func QueryImagesRecord(ctx context.Context, ids []int64) ([]searchapi.AddRequest, error) {
+	ans := []searchapi.AddRequest{}
+	var err error
+	for _, id := range ids {
+		var recordEntry Record
+		result := DB.Model(&Record{}).First(&recordEntry, "record_id = ?", id)
+		if result.Error != nil {
+			err = result.Error
+		}
+		if strings.HasPrefix(recordEntry.Url, "http") && (strings.Contains(recordEntry.Url, ".jpg") ||
+			strings.Contains(recordEntry.Url, ".gif") || strings.Contains(recordEntry.Url, ".jpeg") ||
+			strings.Contains(recordEntry.Url, ".png")) {
+			ans = append(ans, searchapi.AddRequest{Id: recordEntry.RecordId, Text: recordEntry.Text, Url: recordEntry.Url})
+		}
+
+	}
+	return ans, err
 }

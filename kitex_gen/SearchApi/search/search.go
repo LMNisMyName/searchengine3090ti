@@ -24,6 +24,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"relatedQuery":  kitex.NewMethodInfo(relatedQueryHandler, newSearchRelatedQueryArgs, newSearchRelatedQueryResult, false),
 		"findID":        kitex.NewMethodInfo(findIDHandler, newSearchFindIDArgs, newSearchFindIDResult, false),
 		"queryIDNumber": kitex.NewMethodInfo(queryIDNumberHandler, newSearchQueryIDNumberArgs, newSearchQueryIDNumberResult, false),
+		"imgquery":      kitex.NewMethodInfo(imgqueryHandler, newSearchImgqueryArgs, newSearchImgqueryResult, false),
+		"wd2imgquery":   kitex.NewMethodInfo(wd2imgqueryHandler, newSearchWd2imgqueryArgs, newSearchWd2imgqueryResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "searchapi",
@@ -129,6 +131,42 @@ func newSearchQueryIDNumberResult() interface{} {
 	return searchapi.NewSearchQueryIDNumberResult()
 }
 
+func imgqueryHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*searchapi.SearchImgqueryArgs)
+	realResult := result.(*searchapi.SearchImgqueryResult)
+	success, err := handler.(searchapi.Search).Imgquery(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newSearchImgqueryArgs() interface{} {
+	return searchapi.NewSearchImgqueryArgs()
+}
+
+func newSearchImgqueryResult() interface{} {
+	return searchapi.NewSearchImgqueryResult()
+}
+
+func wd2imgqueryHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*searchapi.SearchWd2imgqueryArgs)
+	realResult := result.(*searchapi.SearchWd2imgqueryResult)
+	success, err := handler.(searchapi.Search).Wd2imgquery(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newSearchWd2imgqueryArgs() interface{} {
+	return searchapi.NewSearchWd2imgqueryArgs()
+}
+
+func newSearchWd2imgqueryResult() interface{} {
+	return searchapi.NewSearchWd2imgqueryResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -184,6 +222,26 @@ func (p *kClient) QueryIDNumber(ctx context.Context, req *searchapi.QueryIDNumbe
 	_args.Req = req
 	var _result searchapi.SearchQueryIDNumberResult
 	if err = p.c.Call(ctx, "queryIDNumber", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Imgquery(ctx context.Context, req *searchapi.ImgQueryRequest) (r *searchapi.ImgQueryResponse, err error) {
+	var _args searchapi.SearchImgqueryArgs
+	_args.Req = req
+	var _result searchapi.SearchImgqueryResult
+	if err = p.c.Call(ctx, "imgquery", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Wd2imgquery(ctx context.Context, req *searchapi.Wd2imgQueryRequest) (r *searchapi.Wd2imgQueryResponse, err error) {
+	var _args searchapi.SearchWd2imgqueryArgs
+	_args.Req = req
+	var _result searchapi.SearchWd2imgqueryResult
+	if err = p.c.Call(ctx, "wd2imgquery", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
