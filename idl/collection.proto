@@ -1,0 +1,91 @@
+syntax = "proto3";
+package collection;
+option go_package = "collectionModel";
+
+message BaseResp{
+    int64 status_code = 1;
+    string status_message = 2;
+    int64 service_time = 3;
+}
+
+message Collection{
+    int64 user_id = 1;
+    int64 collt_id = 2;
+    string name = 3;
+    repeated int64 entry = 4;
+}
+
+message CreateColltRequest{
+    int64 user_id = 1;
+    string name = 2;
+}
+message CreateColltResponse{
+    BaseResp base_resp = 1;
+}
+
+message GetColltRequest{
+    int64 user_id = 1;
+    int64 collt_id = 2;
+}
+message GetColltResponse{
+    string name = 1;
+    repeated int64 entry = 2;
+    BaseResp base_resp = 3;
+}
+
+message MGetColltResquest{
+    int64 user_id = 1;
+}
+message MGetColltResponse{
+    message Collection{
+        string name = 1;
+        int64 collt_id = 2;     
+    }
+    repeated Collection collections = 1;
+    BaseResp base_resp = 2;
+}
+
+message DeleteColltRequest{
+    int64 user_id = 1;
+    int64 collt_id = 2;
+}
+message DeleteColltResponse{
+    BaseResp base_resp = 1;
+}
+
+message AddEntryRequest{
+    int64 user_id = 1;
+    int64 collt_id = 2;
+    int64 newEntry = 3;
+}
+message AddEntryResponse{
+    BaseResp base_resp = 1;
+}
+
+message DeleteEntryRequest{
+    int64 user_id = 1;
+    int64 collt_id = 2;
+    int64 entry = 3;
+}
+message DeleteEntryResponse{
+    BaseResp base_resp = 1;
+}
+
+message SetNameRequest{
+    int64 user_id = 1;
+    int64 collt_id = 2;
+    string newName = 3;
+}
+message SetNameResponse{
+    BaseResp base_resp = 1;
+}
+
+service CollectionService{
+    rpc CreateCollection (CreateColltRequest) returns (CreateColltResponse){}
+    rpc GetCollection (GetColltRequest) returns (GetColltResponse){}
+    rpc MGetCollection (MGetColltResquest) returns (MGetColltResponse){}
+    rpc DeleteCollection (DeleteColltRequest) returns (DeleteColltResponse){}
+    rpc AddEntry (AddEntryRequest) returns (AddEntryResponse){}
+    rpc DeleteEntry (DeleteEntryRequest) returns (DeleteEntryResponse){}
+    rpc SetName (SetNameRequest) returns (SetNameResponse){}
+}
